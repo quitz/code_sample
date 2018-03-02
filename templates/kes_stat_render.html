@@ -1,0 +1,318 @@
+$def with( global_info)
+
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>导航关键统计报表</title>
+    
+    <script src="/static/js/jquery.min.js"></script>    
+    <script src="/static/js/highstock.js"></script>
+    <script src="/static/js/exporting.js"></script> 
+    <script src="/static/js/jquery.min.map"></script>   
+    <script src="/static/jquery-ui-1.10.3/ui/jquery.ui.core.js"></script>
+    <script src="/static/jquery-ui-1.10.3/ui/jquery.ui.widget.js"></script>
+    <script src="/static/jquery-ui-1.10.3/ui/jquery.ui.datepicker.js"></script>
+    <link rel="stylesheet" href="/static/jquery-ui-1.10.3/themes/base/jquery.ui.all.css">
+    <link rel="stylesheet" href="/static/jquery-ui-1.10.3/demos/demos.css">
+    <style type="text/css">
+        html,body
+        {
+            height: 100%;
+            margin: 0;
+            
+        }
+        .left
+        {
+            float: left;
+            height: 6000px;
+            width: 200px;
+            background:#88ee88;
+            border: 5px solid #88ee88 ;
+        }
+        .right
+        {
+            margin-left:210px; 
+            height: 6000px;
+            width: 1100px;
+            background:#eeffee;
+            border: 3px solid #80e080 ;
+        }  
+        .divtool
+        {
+            width: 100%;
+            height: 100px;
+            box-shadow: 0 0 1px #0f0f0f;
+        }
+        .divcomment
+        {
+            width: 100%;
+            height: 5900px ;
+            background:#ffffee ;
+        }
+        .divtoolname
+        {
+            width: 100%;
+            height: 35%;
+            text-align:center;
+            background:#ccffdd;
+            box-shadow: 0 0 3px #0f0f0f;
+        }
+        .divtooltools
+        {
+            width: 100%;
+            height: 63%;
+            box-shadow: 0 0 3px #0f0f0f;
+        }
+        .buttonLeft
+        {
+            width:80%;
+            height:30px;
+            box-shadow: 0 0 1px #0f0f0f;
+        }
+    </style>
+</head>
+<body>
+    <form id="log_form" method="POST">
+        <div class="left" id="div_left">
+            <div style="width:100%;height:130px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >概览信息</a>
+                    </div>
+                    <p><input type="button" value="导航统计概览" class="buttonLeft" onclick="button_jump_click('top_all')"></p>
+                    <p><input type="button" value="导航关键统计报表" class="buttonLeft" onclick="button_jump_click('kes_stat')"></p>
+                </center>
+            </div>
+            </br>
+            <div style="width:100%;height:150px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >日志信息查询</a>
+                    </div>
+                    <p><input type="button" value="错误日志查询" class="buttonLeft" onclick="button_jump_click('error_log')"></p>
+                    <p><input type="button" value="cuid查询" class="buttonLeft" onclick="button_jump_click('cuid_log')" ></p>
+                </center>
+            </div>
+            </br>
+            <div style="width:100%;height:300px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >端信息查询</a>
+                    </div>
+                    <p><input type="button" value="端pv统计"  class="buttonLeft"  onclick="button_jump_click('port_pv')" ></p>
+                    <p><input type="button" value="端错误率统计"  class="buttonLeft"  onclick="button_jump_click('port_error')" ></p>
+                    <p><input type="button" value="端非法率统计"  class="buttonLeft"  onclick="button_jump_click('port_illegal')" ></p>
+                    <p><input type="button" value="端数据量统计"  class="buttonLeft"  onclick="button_jump_click('port_data')" ></p>
+                    <p><input type="button" value="端性能统计"  class="buttonLeft"  onclick="button_jump_click('port_performance')" ></p>
+                    <p><input type="button" value="偏航统计" class="buttonLeft" onclick="button_jump_click('yawpos_summary')" ></p>
+                </center>
+            </div>
+            </br>
+            <div style="width:100%;height:300px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >version信息查询</a>
+                    </div>
+                    <p><input type="button" value="version-pv统计"  class="buttonLeft" onclick="button_jump_click('version_pv')" ></p>
+                    <p><input type="button" value="version错误率统计"  class="buttonLeft" onclick="button_jump_click('version_error')" ></p>
+                    <p><input type="button" value="version非法率统计"  class="buttonLeft" onclick="button_jump_click('version_illegal')" ></p>
+                    <p><input type="button" value="version数据量统计" class="buttonLeft"  onclick="button_jump_click('version_data')" ></p>
+                    <p><input type="button" value="version性能统计" class="buttonLeft" onclick="button_jump_click('version_performance')" ></p>
+                    <p><input type="button" value="模块性能统计" class="buttonLeft" onclick="button_jump_click('module_performance')" ></p>
+                </center>
+            </div>
+            </br>
+            <div style="width:100%;height:120px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >用户反馈信息查询</a>
+                    </div>
+                    <p><input type="button" value="用户吐槽类型统计"  class="buttonLeft" onclick="button_jump_click('naviure_type_flag')" ></p>
+                </center>
+            </div>
+            </br>
+            <div style="width:100%;height:300px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >其他信息查询</a>
+                    </div>
+                    <p><input type="button" value="multinavi session 统计" class="buttonLeft" onclick="button_jump_click('multinavi_session_query')" ></p>
+                    <p><input type="button" value="特殊路线pv统计" class="buttonLeft" onclick="button_jump_click('special_route_type_pv')" ></p>
+                    <p><input type="button" value="城市query统计" class="buttonLeft" onclick="button_jump_click('city_query')" ></p>
+                    <p><input type="button" value="多路线召回信息统计" class="buttonLeft" onclick="button_jump_click('multi_route_recall')" ></p>
+                    <p><input type="button" value="导航偏好信息统计" class="buttonLeft" onclick="button_jump_click('navigation_preference')" ></p>
+                    <p><input type="button" value="时间评估统计" class="buttonLeft" onclick="button_jump_click('route_time_ratio')" ></p>
+                </center>
+            </div>
+        </div>
+        <div class="right" id="div_right">
+            <div class="divtool">
+                <div class="divtoolname">
+                    <a style="font-size:26px">导航关键统计报表</a>
+                </div>
+            </div>
+            <div class="divcomment">
+                <center>
+                    <div style="width:100%;background:#cba;">
+                        <li style="font-size:20px">过去三周信息统计表</li>
+                    <div>
+                    <div style="width:100%;height:30px;background:#ccc;">
+                        <a style="font-size:20px">精度选择：</a>
+                        <select name="select_precision" id="select_precision">
+                            <option value='100'>  0.01  </option>
+                            <option value='1000'>  0.001  </option>
+                            <option value='10000'>  0.0001  </option>
+                            <option value='100000'>  0.00001  </option>
+                        </select>
+                        <input type="button" value="查询" onclick="button_select_precision_click()" >
+                    </div>
+                    <div style="width:100%;background:#ffffff;height:250px">
+                        </br>
+                        <table id="show_info_table" border=1>
+                        </table>
+                    </div>
+                </center>
+            </div>
+        </div>
+    </form>
+</body>
+
+
+<script type="text/javascript">
+    JQ = jQuery.noConflict();
+    
+    var host_port    = $:global_info ;
+    var host        = "http://" + host_port[0] ;
+    var port_num    = host_port[1] ;
+    
+    function button_jump_click( target_page ){
+        var url = host + ":" + port_num + "/" + target_page;
+        window.open( url , "_self");
+    }
+    
+    var port_name_2_port_name_show = {}
+    port_name_2_port_name_show[ "webmap" ] = "webmap";
+    port_name_2_port_name_show[ "webapp" ] = "webapp";
+    port_name_2_port_name_show[ "webapi" ] = "webapi";
+    port_name_2_port_name_show[ "unknown" ] = "来源未知";
+    port_name_2_port_name_show[ "baidu_map" ] = "百度地图";
+    port_name_2_port_name_show[ "baidu_navi" ] = "百度导航";
+    port_name_2_port_name_show[ "navi_sdk" ] = "导航SDK";
+    port_name_2_port_name_show[ "other_service" ] = "其他后端服务";
+    port_name_2_port_name_show[ "remove_port" ] = "resid不存在";
+    
+    var data_dict = {};
+    var precision = 100; //0.01
+
+    function button_select_precision_click(){
+        draw_all_talbes();
+    }
+    
+    function get_one_tr_innerHTML(tr_name, tr_data_raw, suffix){
+        var tr_data = [];
+        for (var i = 0 ; i < tr_data_raw.length; i++){
+            tr_data.push(tr_data_raw[i]);
+        }
+        for (var i = 0 ; i < tr_data.length; i++){
+            if ("" + tr_data[i] != "-9999999"){
+                tr_data[i] = Math.round(tr_data[i]*precision)/precision;
+            }
+        }
+        if ("" + tr_data[0] != "-9999999" && "" + tr_data[2] != "-9999999"){
+            tr_data[1] = (tr_data[0] - tr_data[2]) * 100.0 / tr_data[2];
+            tr_data[1] = Math.round(tr_data[1]*precision)/precision;
+        }
+        if ("" + tr_data[2] != "-9999999" && "" + tr_data[4] != "-9999999"){
+            tr_data[3] = (tr_data[2] - tr_data[4]) * 100.0 / tr_data[4];
+            tr_data[3] = Math.round(tr_data[3]*precision)/precision;
+        }
+
+            
+        var tr_html = "<tr><td>" + tr_name + "</td>";
+        for (var i = 0 ; i < 5 ; i++){
+            if ("" + tr_data[i] == "-9999999"){
+                tr_html = tr_html + "<td>NULL</td>"
+            }else{
+                if (i==1 || i==3){
+                    tr_html = tr_html + "<td>" + tr_data[i] + "%</td>"
+                }else{
+                    tr_html = tr_html + "<td>" + tr_data[i] + suffix + "</td>"
+                }
+            }
+        }
+        tr_html = tr_html + "</tr>";
+        return tr_html;
+    }
+
+    function draw_all_talbes(){
+        precision = document.getElementById("select_precision").value;
+        var date_list = data_dict["date_list"];
+        var routecalc_count_net_percent = data_dict["routecalc_count_net_percent"];
+        var routecalc_count_local_percent = data_dict["routecalc_count_local_percent"];
+        var navi_kes_online_yaw_ratio = data_dict["navi_kes_online_yaw_ratio"];
+        var navi_kes_offline_yaw_ratio = data_dict["navi_kes_offline_yaw_ratio"];
+        var navi_kes_yaw_uv_ratio = data_dict["navi_kes_yaw_uv_ratio"];
+        var time_compare_ratio = data_dict["time_compare_ratio"];
+        var baidu_err_ratio = data_dict["baidu_err_ratio"];
+        
+        var show_info_table_inner_html = "";
+        show_info_table_inner_html = show_info_table_inner_html + 
+            "<tr>" +
+                "<th>分析项</th>" + 
+                "<th>本周(" + date_list[6] + "~" + date_list[0] + ")</th>" + 
+                "<th>对比上周</th>" + 
+                "<th>上周(" + date_list[13] + "~" + date_list[7] + ")</th>" + 
+                "<th>对比上周</th>" + 
+                "<th>上上周(" + date_list[20] + "~" + date_list[14] + ")</th>" +
+            "</tr>";
+            
+            
+        
+        show_info_table_inner_html = show_info_table_inner_html + 
+                    get_one_tr_innerHTML("百度导航在线算路比例",routecalc_count_net_percent,"%");
+        show_info_table_inner_html = show_info_table_inner_html + 
+                    get_one_tr_innerHTML("百度导航离线算路比例",routecalc_count_local_percent,"%");
+        show_info_table_inner_html = show_info_table_inner_html + 
+                    get_one_tr_innerHTML("百度导航在线偏航率",navi_kes_online_yaw_ratio,"%");
+        show_info_table_inner_html = show_info_table_inner_html + 
+                    get_one_tr_innerHTML("百度导航离线偏航率",navi_kes_offline_yaw_ratio,"%");
+        show_info_table_inner_html = show_info_table_inner_html + 
+                    get_one_tr_innerHTML("偏航率uv占比",navi_kes_yaw_uv_ratio,"%");
+        show_info_table_inner_html = show_info_table_inner_html + 
+                    get_one_tr_innerHTML("导航时间/规划时间",time_compare_ratio,"%");
+        show_info_table_inner_html = show_info_table_inner_html + 
+                    get_one_tr_innerHTML("总体规划失败率",baidu_err_ratio,"%");
+        
+        document.getElementById("show_info_table").innerHTML = show_info_table_inner_html;
+        
+    }
+    
+    
+    
+    
+    var xmlHTTP     = new XMLHttpRequest();
+    function query_info_done(){
+        if( xmlHTTP.readyState == 4 && xmlHTTP.status == 200){
+            json_obj = eval('(' + xmlHTTP.responseText + ')');
+            data_dict = json_obj;
+            draw_all_talbes();
+        }
+    }
+
+
+
+    function search_button_on_click(  ){
+        var url = host + ":" + port_num + "/kes_stat_get_data";
+        xmlHTTP.open("POST", url, true);
+        xmlHTTP.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+        xmlHTTP.onreadystatechange = query_info_done;
+        xmlHTTP.send( "" );
+    }
+    
+    search_button_on_click();
+    
+    
+    
+</script>
+
+</html>

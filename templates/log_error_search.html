@@ -1,0 +1,428 @@
+$def with( global_info)
+
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>错误日志查询</title>
+	
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=hx4PhPbwWzbPG4risisqwaIU"></script>
+	<script src="/static/js/jquery.min.js"></script>	
+	<script src="/static/js/jquery.min.map"></script>	
+	<script src="/static/jquery-ui-1.10.3/ui/jquery.ui.core.js"></script>
+	<script src="/static/jquery-ui-1.10.3/ui/jquery.ui.widget.js"></script>
+	<script src="/static/jquery-ui-1.10.3/ui/jquery.ui.datepicker.js"></script>
+	<link rel="stylesheet" href="/static/jquery-ui-1.10.3/themes/base/jquery.ui.all.css">
+	<link rel="stylesheet" href="/static/jquery-ui-1.10.3/demos/demos.css">
+    
+    <style type="text/css">
+        html,body
+        {
+            height: 100%;
+            margin: 0;
+            
+        }
+        .left
+        {
+            float: left;
+            height: 6000px;
+            width: 200px;
+            background:#88ee88;
+            border: 5px solid #88ee88 ;
+        }
+        .right
+        {
+            margin-left:210px; 
+            height: 6000px;
+            width: 1100px;
+            background:#eeffee;
+            border: 3px solid #80e080 ;
+        }  
+        .divtool
+        {
+            width: 100%;
+            height: 100px;
+            box-shadow: 0 0 1px #0f0f0f;
+        }
+        .divcomment
+        {
+            width: 100%;
+            height: 5900px ;
+            background:#ffffee ;
+        }
+        .divtoolname
+        {
+            width: 100%;
+            height: 35%;
+            text-align:center;
+            background:#ccffdd;
+            box-shadow: 0 0 3px #0f0f0f;
+        }
+        .divtooltools
+        {
+            width: 100%;
+            height: 63%;
+            box-shadow: 0 0 3px #0f0f0f;
+        }
+        .buttonLeft
+        {
+            width:80%;
+            height:30px;
+            box-shadow: 0 0 1px #0f0f0f;
+        }
+    </style>
+</head>
+<body>
+    <form id="log_form" method="POST">
+        <div class="left" id="div_left">
+            <div style="width:100%;height:130px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >概览信息</a>
+                    </div>
+                    <p><input type="button" value="导航统计概览" class="buttonLeft" onclick="button_jump_click('top_all')"></p>
+                    <p><input type="button" value="导航关键统计报表" class="buttonLeft" onclick="button_jump_click('kes_stat')"></p>
+                </center>
+            </div>
+            </br>
+            <div style="width:100%;height:150px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >日志信息查询</a>
+                    </div>
+                    <p><input type="button" value="错误日志查询" class="buttonLeft" onclick="button_jump_click('error_log')"></p>
+                    <p><input type="button" value="cuid查询" class="buttonLeft" onclick="button_jump_click('cuid_log')" ></p>
+                </center>
+            </div>
+            </br>
+            <div style="width:100%;height:300px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >端信息查询</a>
+                    </div>
+                    <p><input type="button" value="端pv统计"  class="buttonLeft"  onclick="button_jump_click('port_pv')" ></p>
+                    <p><input type="button" value="端错误率统计"  class="buttonLeft"  onclick="button_jump_click('port_error')" ></p>
+                    <p><input type="button" value="端非法率统计"  class="buttonLeft"  onclick="button_jump_click('port_illegal')" ></p>
+                    <p><input type="button" value="端数据量统计"  class="buttonLeft"  onclick="button_jump_click('port_data')" ></p>
+                    <p><input type="button" value="端性能统计"  class="buttonLeft"  onclick="button_jump_click('port_performance')" ></p>
+                    <p><input type="button" value="偏航统计" class="buttonLeft" onclick="button_jump_click('yawpos_summary')" ></p>
+                </center>
+            </div>
+            </br>
+            <div style="width:100%;height:300px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >version信息查询</a>
+                    </div>
+                    <p><input type="button" value="version-pv统计"  class="buttonLeft" onclick="button_jump_click('version_pv')" ></p>
+                    <p><input type="button" value="version错误率统计"  class="buttonLeft" onclick="button_jump_click('version_error')" ></p>
+                    <p><input type="button" value="version非法率统计"  class="buttonLeft" onclick="button_jump_click('version_illegal')" ></p>
+                    <p><input type="button" value="version数据量统计" class="buttonLeft"  onclick="button_jump_click('version_data')" ></p>
+                    <p><input type="button" value="version性能统计" class="buttonLeft" onclick="button_jump_click('version_performance')" ></p>
+                    <p><input type="button" value="模块性能统计" class="buttonLeft" onclick="button_jump_click('module_performance')" ></p>
+                </center>
+            </div>
+            </br>
+            <div style="width:100%;height:120px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >用户反馈信息查询</a>
+                    </div>
+                    <p><input type="button" value="用户吐槽类型统计"  class="buttonLeft" onclick="button_jump_click('naviure_type_flag')" ></p>
+                </center>
+            </div>
+            </br>
+            <div style="width:100%;height:300px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >其他信息查询</a>
+                    </div>
+                    <p><input type="button" value="multinavi session 统计" class="buttonLeft" onclick="button_jump_click('multinavi_session_query')" ></p>
+                    <p><input type="button" value="特殊路线pv统计" class="buttonLeft" onclick="button_jump_click('special_route_type_pv')" ></p>
+                    <p><input type="button" value="城市query统计" class="buttonLeft" onclick="button_jump_click('city_query')" ></p>
+                    <p><input type="button" value="多路线召回信息统计" class="buttonLeft" onclick="button_jump_click('multi_route_recall')" ></p>
+                    <p><input type="button" value="导航偏好信息统计" class="buttonLeft" onclick="button_jump_click('navigation_preference')" ></p>
+                    <p><input type="button" value="时间评估统计" class="buttonLeft" onclick="button_jump_click('route_time_ratio')" ></p>
+                </center>
+            </div>
+        </div>
+		<div class="right" id="div_right">
+			<div class="divtool">
+				<div class="divtoolname">
+					<a style="font-size:20px">错误日志查询</a>
+					
+				</div>
+				<div class="divtooltools">
+					<div style="margin-left:2px;float:left;width:250px;height:98%;background:#bcdeff;box-shadow: 0 0 1px #000;">
+						<center>
+							<div style="width:100%;height:22px;background:#abcdef;">
+								<a style="font-size:20px;" >时间选择 </a>
+							</div>
+							<div style="width:100%;height:5px;"></div>
+							日期: <input type="text" id="datepicker_date" name="datepicker_date" style="width:80px">
+						</center>
+					</div>
+					<div style="margin-left:2px;float:left;width:250px;height:98%;background:#bcdeff;box-shadow: 0 0 1px #000;">
+						<center>
+							<div style="width:100%;height:22px;background:#abcdef;">
+								<a style="font-size:20px;" >qt-version选择 </a>
+							</div>
+							<div style="width:100%;height:5px;"></div>
+							qt: <input type="text" id="qt_info" name="qt_info" style="width:80px">
+							version: <input type="text" id="version_info" name="version_info" style="width:80px">
+						</center>
+					</div>
+					<div style="margin-left:3px;float:left;width:120px;height:98%;background:#bcdeff;box-shadow: 0 0 1px #000;">
+						<center>
+							<div style="width:100%;height:22px;background:#abcdef;">
+								<a style="font-size:20px;" >查询操作 </a>
+							</div>
+							<div style="width:100%;height:5px;"></div>
+							<input type="button" value="查询"  name="Button_Search" id="Button_Search" onclick="search_button_on_click()" style="width:100px;height:25px;box-shadow: 0 0 1px #0f0f0f;" >
+						</center>
+					</div>
+					<div style="margin-left:3px;float:left;width:250px;height:98%;background:#bcdeff;box-shadow: 0 0 1px #000;">
+						<center>
+							<div style="width:100%;height:22px;background:#abcdef;">
+								<a style="font-size:20px;" >展示选项 </a>
+							</div>
+							<div style="width:100%;height:5px;"></div>
+							<input type="button" id="button_pre_page" name="button_pre_page" value="前一页" onclick="button_pre_click()" style="width:100px;height:25px;box-shadow: 0 0 1px #0f0f0f;" >
+							<input type="button" id="button_next_page" name="button_next_page" value="下一页" onclick="button_next_click()" style="width:100px;height:25px;box-shadow: 0 0 1px #0f0f0f;" >
+						</center>
+					</div>
+				</div>
+			</div>
+			<div class="divcomment">
+				<input type="text" id="line_num_txt" name="line_num_txt"  style="display:none">
+				<input type="text" id="pre_qt_info" name="pre_qt_info" style="display:none">
+				<input type="text" id="pre_version_info" name="pre_version_info" style="display:none">
+				<br/>
+				<center>
+                    <table border="1" id="log_table" style="word-break:break-all; word-wrap:break-all;">
+                    </table>
+				</center>
+				<center>
+					<div style="float:left;margin: 10;left:150;" >
+						1 <hr width=50px size=3 color="red"></hr>
+						2 <hr width=50px size=3 color="green"></hr>
+						3 <hr width=50px size=3 color="blue"></hr>
+						4 <hr width=50px size=3 color="orange"></hr>
+						5 <hr width=50px size=3 color="purple"></hr>
+					</div>
+					<div  id="container_map" style="float:left;margin: 10;width:800px;height:800px;" tabindex='-1'>
+					
+					</div>
+				</center>
+				</br>
+			</div>
+		</div>
+	</form>
+</body>
+
+
+<script type="text/javascript">
+	JQ = jQuery.noConflict();
+	var host_port	= $:global_info ;
+	var host		= "http://" + host_port[0] ;
+	var port_num	= host_port[1] ;
+	
+	function button_jump_click( target_page ){
+		var url = host + ":" + port_num + "/" + target_page;
+		window.open( url , "_self");
+	}
+	
+	JQ(function() {
+		JQ( "#datepicker_date" ).datepicker();
+	});
+	
+    
+    var log_xmlHTTP = new XMLHttpRequest();
+    function query_error_info_done(){
+        if( log_xmlHTTP.readyState == 4 && log_xmlHTTP.status == 200){
+            json_obj = eval('(' + log_xmlHTTP.responseText + ')');
+            table_obj = document.getElementById("log_table");
+            document.getElementById("datepicker_date").value = json_obj['date_cur'];
+            document.getElementById("pre_qt_info").value = json_obj['qt_cur'];
+            document.getElementById("pre_version_info").value   = json_obj['version_cur'];
+            document.getElementById("qt_info").value = json_obj['qt_cur'];
+            document.getElementById("version_info").value = json_obj['version_cur'];
+            document.getElementById("line_num_txt").value = json_obj['line_num'];
+			
+            query_res = json_obj['query_res'];			
+            var table_innerHTML = "<tr>" + 
+                                    "<th width='30'>复现</th>" +
+                                    "<th width='150'>时间戳</th>" + 
+                                    "<th width='100'>错误编码</th>" +
+                                    "<th width='700'>input</th>" +
+                                  "</tr>";
+
+            for( var i = 0 ; i < query_res.length ; i++ ){
+                k = query_res[i];
+                table_innerHTML = table_innerHTML + 
+                    "<tr>" + 
+                    "<td width='30'><input type='button' value='复现' " + 
+                        "onclick='button_draw_click(\"" + k[4] + "\")' ></td>" + 
+                    "<td width='150'>" + k[0] + "</td>" +
+                    "<td width='100'>" + k[3] + "</td>" +
+                    "<td width='700'>" + k[4] + "</td>" +
+                    "</tr>" ;
+            }
+            table_obj.innerHTML = table_innerHTML;
+           
+        }
+    }
+
+
+
+    function search_button_on_click(  ){
+        var pre_qt = document.getElementById( "pre_qt_info" ).value;
+        var pre_version = document.getElementById( "pre_version_info" ).value;
+        var cur_qt = document.getElementById( "qt_info" ).value;
+        var cur_version = document.getElementById( "version_info" ).value;
+        var line_num = document.getElementById( "line_num_txt" ).value;
+        if( cur_qt != pre_qt || cur_version != pre_version ){
+            line_num = "1";
+        }
+        var url = host + ":" + port_num + "/error_log_get_data";
+        var info = "";
+        info = info + "date=" + document.getElementById("datepicker_date").value ;
+        info = info + "&line_num=" + line_num ;
+        info = info + "&qt=" + cur_qt;
+        info = info + "&version=" + cur_version;
+        log_xmlHTTP.open("POST", url, true);
+        log_xmlHTTP.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+        log_xmlHTTP.onreadystatechange = query_error_info_done;
+        log_xmlHTTP.send( info );
+    }
+    
+    
+    
+    
+    
+    function button_next_click(){
+		var line_num_cur	= parseInt( document.getElementById("line_num_txt").value );
+		line_num_cur		= line_num_cur + 20;
+		document.getElementById("line_num_txt").value = "" + line_num_cur;
+        search_button_on_click();
+	}
+	
+	function button_pre_click(){
+		var line_num_cur	= parseInt( document.getElementById("line_num_txt").value );
+		line_num_cur		= line_num_cur - 20;
+		if( line_num_cur < 1 ) line_num_cur = 1;
+		document.getElementById("line_num_txt").value = "" + line_num_cur;
+        search_button_on_click();
+	}
+    
+    
+    
+    search_button_on_click();
+    
+    
+    
+    
+    
+    
+	var xmlHTTP 	= new XMLHttpRequest();
+	var color_list	= [ "red" , "green" , "blue" , "orange" , "purple" ];
+	
+	
+	var map = new BMap.Map("container_map");
+	map.centerAndZoom(new BMap.Point(116.390740,39.837835), 15);
+	map.enableScrollWheelZoom();
+        
+	function drawLines( point_array , line_color ) {
+		var polyline;
+		if (point_array.length > 0) {
+			polyline = new BMap.Polyline( point_array , { strokeColor:line_color, strokeWeight:6, strokeOpacity:0.5 } );
+			map.addOverlay( polyline );
+			map.centerAndZoom( point_array[0], 15 );
+			//map.addOverlay(new BMap.Marker(point_array[0]));  
+		}
+	}
+	
+	
+	function get_route_points( route ){
+		var point_array = new Array();
+		for( var i = 0 ; i < route.length ; i++ ){
+			point_array.push( new BMap.Point( route[i][0] , route[i][1] ) );
+		}
+		return point_array;
+	}
+	//alert( 0 );
+	
+	function draw_sn_en( sn ,en ){
+		sp = new BMap.Point( sn[0] , sn[1] );
+		ep = new BMap.Point( en[0] , en[1] );
+		sm = new BMap.Marker( sp );
+		em = new BMap.Marker( ep );
+		map.addOverlay( sm );
+		map.addOverlay( em );  
+		map.centerAndZoom( sp , 15 );
+		var sinfo = new BMap.InfoWindow("<p>起点:</p><p>" + sn + "</p>");
+		var einfo = new BMap.InfoWindow("<p>终点:</p><p>" + en + "</p>");
+		sm.addEventListener( "click" , function(){ this.openInfoWindow( sinfo ); } );
+		em.addEventListener( "click" , function(){ this.openInfoWindow( einfo ); } );
+	}
+	
+	
+	function queryLinkInfoDone(){
+		//alert( xmlHTTP.readyState + "," + xmlHTTP.status);
+		if(xmlHTTP.readyState == 4 && xmlHTTP.status == 200){
+			map.clearOverlays();
+			jsonObj = eval('(' + xmlHTTP.responseText + ')');
+			draw_sn_en( jsonObj["sn"] , jsonObj["en"] );
+			
+			if( jsonObj['routes'].length == 0 ){
+				alert( "复现失败" );
+				return 1;
+			}
+			document.getElementById('container_map').focus();
+			for( var i = 0 ; i < jsonObj['routes'].length ; i ++ ){
+				route 		= jsonObj['routes'][i];
+				point_array	= get_route_points( route );
+				drawLines( point_array , color_list[ i ] );
+			}
+		}
+	}
+	
+	
+	function replace_special_char( s ){
+		s = s.replace( /%/g , "%25" );
+		s = s.replace( /#/g , "%23" );
+		s = s.replace( /&/g , "%26" );
+		s = s.replace( /\+/g , "%2B" );
+		s = s.replace( /\\/g , "%2F" );
+		s = s.replace( /=/g , "%3D" );
+        s = s.replace( /\?/g , "%3F" );
+        s = s.replace( /;/g , "%3B" );
+		return s;
+	}
+
+	function button_draw_click( info ){
+		info = replace_special_char( info );
+		var url = host + ":" + port_num + "/get_bd09ll_points";
+		xmlHTTP.open("POST", url, true);
+		xmlHTTP.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		xmlHTTP.onreadystatechange = queryLinkInfoDone;
+		xmlHTTP.send('input_str=' + encodeURI( info ) );
+	}
+	
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</html>

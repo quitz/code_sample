@@ -1,0 +1,635 @@
+$def with( global_info)
+
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>时间对比统计</title>
+    
+    <script src="/static/js/jquery.min.js"></script>    
+    <script src="/static/js/highstock.js"></script>
+    <script src="/static/js/exporting.js"></script> 
+    <script src="/static/js/jquery.min.map"></script>   
+    <script src="/static/jquery-ui-1.10.3/ui/jquery.ui.core.js"></script>
+    <script src="/static/jquery-ui-1.10.3/ui/jquery.ui.widget.js"></script>
+    <script src="/static/jquery-ui-1.10.3/ui/jquery.ui.datepicker.js"></script>
+    <link rel="stylesheet" href="/static/jquery-ui-1.10.3/themes/base/jquery.ui.all.css">
+    <link rel="stylesheet" href="/static/jquery-ui-1.10.3/demos/demos.css">
+    <style type="text/css">
+        html,body
+        {
+            height: 100%;
+            margin: 0;
+            
+        }
+        .left
+        {
+            float: left;
+            height: 6000px;
+            width: 200px;
+            background:#88ee88;
+            border: 5px solid #88ee88 ;
+        }
+        .right
+        {
+            margin-left:210px; 
+            height: 6000px;
+            width: 1100px;
+            background:#eeffee;
+            border: 3px solid #80e080 ;
+        }  
+        .divtool
+        {
+            width: 100%;
+            height: 100px;
+            box-shadow: 0 0 1px #0f0f0f;
+        }
+        .divcomment
+        {
+            width: 100%;
+            height: 5900px ;
+            background:#ffffee ;
+        }
+        .divtoolname
+        {
+            width: 100%;
+            height: 35%;
+            text-align:center;
+            background:#ccffdd;
+            box-shadow: 0 0 3px #0f0f0f;
+        }
+        .divtooltools
+        {
+            width: 100%;
+            height: 63%;
+            box-shadow: 0 0 3px #0f0f0f;
+        }
+        .buttonLeft
+        {
+            width:80%;
+            height:30px;
+            box-shadow: 0 0 1px #0f0f0f;
+        }
+    </style>
+</head>
+<body>
+    <form id="log_form" method="POST">
+        <div class="left" id="div_left">
+            <div style="width:100%;height:130px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >概览信息</a>
+                    </div>
+                    <p><input type="button" value="导航统计概览" class="buttonLeft" onclick="button_jump_click('top_all')"></p>
+                    <p><input type="button" value="导航关键统计报表" class="buttonLeft" onclick="button_jump_click('kes_stat')"></p>
+                </center>
+            </div>
+            </br>
+            <div style="width:100%;height:150px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >日志信息查询</a>
+                    </div>
+                    <p><input type="button" value="错误日志查询" class="buttonLeft" onclick="button_jump_click('error_log')"></p>
+                    <p><input type="button" value="cuid查询" class="buttonLeft" onclick="button_jump_click('cuid_log')" ></p>
+                </center>
+            </div>
+            </br>
+            <div style="width:100%;height:300px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >端信息查询</a>
+                    </div>
+                    <p><input type="button" value="端pv统计"  class="buttonLeft"  onclick="button_jump_click('port_pv')" ></p>
+                    <p><input type="button" value="端错误率统计"  class="buttonLeft"  onclick="button_jump_click('port_error')" ></p>
+                    <p><input type="button" value="端非法率统计"  class="buttonLeft"  onclick="button_jump_click('port_illegal')" ></p>
+                    <p><input type="button" value="端数据量统计"  class="buttonLeft"  onclick="button_jump_click('port_data')" ></p>
+                    <p><input type="button" value="端性能统计"  class="buttonLeft"  onclick="button_jump_click('port_performance')" ></p>
+                    <p><input type="button" value="偏航统计" class="buttonLeft" onclick="button_jump_click('yawpos_summary')" ></p>
+                </center>
+            </div>
+            </br>
+            <div style="width:100%;height:300px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >version信息查询</a>
+                    </div>
+                    <p><input type="button" value="version-pv统计"  class="buttonLeft" onclick="button_jump_click('version_pv')" ></p>
+                    <p><input type="button" value="version错误率统计"  class="buttonLeft" onclick="button_jump_click('version_error')" ></p>
+                    <p><input type="button" value="version非法率统计"  class="buttonLeft" onclick="button_jump_click('version_illegal')" ></p>
+                    <p><input type="button" value="version数据量统计" class="buttonLeft"  onclick="button_jump_click('version_data')" ></p>
+                    <p><input type="button" value="version性能统计" class="buttonLeft" onclick="button_jump_click('version_performance')" ></p>
+                    <p><input type="button" value="模块性能统计" class="buttonLeft" onclick="button_jump_click('module_performance')" ></p>
+                </center>
+            </div>
+            </br>
+            <div style="width:100%;height:120px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >用户反馈信息查询</a>
+                    </div>
+                    <p><input type="button" value="用户吐槽类型统计"  class="buttonLeft" onclick="button_jump_click('naviure_type_flag')" ></p>
+                </center>
+            </div>
+            </br>
+            <div style="width:100%;height:300px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >其他信息查询</a>
+                    </div>
+                    <p><input type="button" value="multinavi session 统计" class="buttonLeft" onclick="button_jump_click('multinavi_session_query')" ></p>
+                    <p><input type="button" value="特殊路线pv统计" class="buttonLeft" onclick="button_jump_click('special_route_type_pv')" ></p>
+                    <p><input type="button" value="城市query统计" class="buttonLeft" onclick="button_jump_click('city_query')" ></p>
+                    <p><input type="button" value="多路线召回信息统计" class="buttonLeft" onclick="button_jump_click('multi_route_recall')" ></p>
+                    <p><input type="button" value="导航偏好信息统计" class="buttonLeft" onclick="button_jump_click('navigation_preference')" ></p>
+                    <p><input type="button" value="时间评估统计" class="buttonLeft" onclick="button_jump_click('route_time_ratio')" ></p>
+                </center>
+            </div>
+        </div>
+        <div class="right" id="div_right">
+            <div class="divtool">
+                <div class="divtoolname">
+                    <a style="font-size:20px">时间对比（真值对比估计值）</a>
+                    
+                </div>
+                <div class="divtooltools">
+                    <div style="margin-left:2px;float:left;width:250px;height:98%;background:#bcdeff;box-shadow: 0 0 1px #000;">
+                        <center>
+                            <div style="width:100%;height:22px;background:#abcdef;">
+                                <a style="font-size:20px;" >时间选择 </a>
+                            </div>
+                            <div style="width:100%;height:5px;"></div>
+                            From: <input type="text" id="datepicker_from" name="datepicker_from" style="width:80px" >
+                            To: <input type="text" id="datepicker_to" name="datepicker_to" style="width:80px" >
+                        </center>
+                    </div>
+                    <div style="margin-left:3px;float:left;width:120px;height:98%;background:#bcdeff;box-shadow: 0 0 1px #000;">
+                        <center>
+                            <div style="width:100%;height:22px;background:#abcdef;">
+                                <a style="font-size:20px;" >查询操作 </a>
+                            </div>
+                            <div style="width:100%;height:5px;"></div>
+                            <input type="button" value="查询"  name="Button_Search" id="Button_Search" 
+                                    style="width:100px;height:25px;box-shadow: 0 0 1px #0f0f0f;" 
+                                    onclick="search_button_on_click()">
+                        </center>
+                    </div>
+                    <div style="margin-left:3px;float:left;width:240px;height:98%;background:#bcdeff;box-shadow: 0 0 1px #000;">
+                        <center>
+                            <div style="width:100%;height:22px;background:#abcdef;">
+                                <a style="font-size:20px;" >展示选项 </a>
+                            </div>
+                            <div style="width:100%;height:5px;"></div>
+                            <input type="button" id="button_day" name="button_day" value="按天数展示" style="width:100px;height:25px;box-shadow: 0 0 1px #0f0f0f;" onclick="button_day_click()" >
+                            <input type="button" id="button_week" name="button_week" value="按周展示" style="width:100px;height:25px;box-shadow: 0 0 1px #0f0f0f;" onclick="button_week_click()" >
+                        </center>
+                    </div>
+                </div>
+            </div>
+            <div class="divcomment">
+                <br/>
+                <center>
+                    <div style="width:100%;height:1600px">
+                        <div style="width:100%;height:388px;background:#000">
+                            <div id="route_time_ratio_dis_column" style="width:100%;float:left;height:100%;background:#800" ></div>
+                        </div>
+                        <div style="width:100%;height:2px;background:#000">
+                        </div>
+                        <div style="width:100%;height:388px;background:#000">
+                            <div id="route_time_ratio_dis_stock" style="width:100%;float:left;height:100%;background:#800" ></div>
+                        </div>
+                        <div style="width:100%;height:2px;background:#000">
+                        </div>
+                        <div style="width:100%;height:388px;background:#000">
+                            <div style="width:35%;float:left;height:100%;background:#fefefe" >
+                                <br></br>
+                                <br></br>
+                                <br></br>
+                                <a style="font-size:20px">时间比率分割选择：</a>
+                                <br></br>
+                                <a style="font-size:18px"> 0---> </a>
+                                <select name="select_ratio_center_from" id="select_ratio_center_from"></select>
+                                <a style="font-size:18px"> ---> </a>
+                                <select name="select_ratio_center_to" id="select_ratio_center_to"></select>
+                                <a style="font-size:18px"> ---> 2.0  ---> 2.0+ </a>
+                                <br></br>
+                                <input type="button" value="时间比率查询" onclick="button_time_ratio_info_click()" >
+                            </div>
+                            <div id="route_time_ratio_dis_pie" style="width:65%;float:left;height:100%;background:#800" ></div>
+                        </div>
+                    </div>
+                </center>
+                
+            </div>
+        </div>
+    </form>
+</body>
+
+
+<script type="text/javascript">
+    JQ = jQuery.noConflict();
+    
+    var host_port   = $:global_info ;
+    var host        = "http://" + host_port[0] ;
+    var port_num    = host_port[1] ;
+    function button_jump_click( target_page ){
+        var url = host + ":" + port_num + "/" + target_page;
+        window.open( url , "_self");
+    }
+    
+    
+    JQ(function() {
+        JQ( "#datepicker_from" ).datepicker();
+    });
+    
+    JQ(function() {
+        JQ( "#datepicker_to" ).datepicker();
+    });
+    
+    
+    var data_len    = 0 ;
+    var pie_divide = [ 0.7 , 1.3 , 2 ];
+    var column_divide = [0.2,0.4,0.6,0.8,1.0,1.2,1.4,1.6,1.8,2.0];
+    var index_to_ratio = 20;
+    var show_type = "day";
+    
+    var select_ratio_center_from = document.getElementById("select_ratio_center_from");
+    var select_ratio_center_to = document.getElementById("select_ratio_center_to");
+    
+    
+    function init_select_ratio_range(){
+        var select_ratio_center_from_inner_html = "";
+        var select_ratio_center_to_inner_html = "";
+        for( var i = 0 ; i <= 40 ; i++ ){
+            var ii = i / index_to_ratio;
+            if( ii == 0.7 ){
+                select_ratio_center_from_inner_html += "<option value=" + ii + "  selected='selected' >" + ii + "</option>" ;
+                select_ratio_center_to_inner_html += "<option value=" + ii + " >" + ii + "</option>" ;
+            }else if( ii == 1.3 ){
+                select_ratio_center_from_inner_html += "<option value=" + ii + " >" + ii + "</option>" ;
+                select_ratio_center_to_inner_html += "<option value=" + ii + "  selected='selected' >" + ii + "</option>" ;
+            }else{
+                select_ratio_center_from_inner_html += "<option value=" + ii + " >" + ii + "</option>" ;
+                select_ratio_center_to_inner_html += "<option value=" + ii + " >" + ii + "</option>" ;
+            }
+        }
+        select_ratio_center_from.innerHTML = select_ratio_center_from_inner_html;
+        select_ratio_center_to.innerHTML = select_ratio_center_to_inner_html;
+    }
+    init_select_ratio_range();
+    
+    var ratio_dis       = [];
+    var all_avg_ratio   = 0;
+    var day_avg_ratio   = [];
+    var day_range       = [];
+    var week_avg_ratio  = [];
+    var week_range      = [];
+    var route_total_num = 0;
+    
+    
+    
+    function createStockChart( div_id , title , ytitle , decimals , suffix , ysuffix , mydata , need_point ){
+        JQ('#' + div_id ).highcharts
+        (
+            'StockChart',
+            {
+                chart: {
+                    type: 'spline'
+                },
+                credits: {
+                    enabled: false
+                },
+                title: {
+                    text: title
+                },
+                xAxis: {
+                    type: 'datetime'
+                },
+                yAxis: {
+                    title: {
+                        text: ytitle
+                    },
+                    labels: {
+                        formatter: function() {
+                            return this.value + ysuffix
+                        }
+                    }
+                },
+                legend: { 
+                    enabled: true 
+                },
+                tooltip: {
+                    crosshairs: true,
+                    shared: true,
+                    useHTML : true,
+                    headerFormat : '<small>{point.key}</small><table>',
+                    pointFormat : '<tr><td style="color:{series.color}">{series.name}:</td>' + '<td style="text-align:right"><b>{point.y}</b></td></tr>',
+                    footerFormat: '</table>',
+                    valueDecimals : decimals,
+                    valueSuffix: suffix
+                },
+                plotOptions: {
+                    series: {
+                        marker: {
+                            enabled: need_point
+                        }
+                    }
+                },
+                navigator: {
+                    margin: 2,
+                    height: 20
+                },
+                rangeSelector: {
+                    enabled: false
+                },
+                series: mydata
+            }
+        );
+    }
+    
+    
+    
+    
+    
+    function createColumn( div_id , title , ytitle , x_cate , decimals , suffix , ysuffix , mydata ){
+        JQ('#' + div_id ).highcharts
+        (
+            {
+                chart: {
+                    type: 'column'
+                },
+                credits: { 
+                    enabled: false 
+                },
+                title: {
+                    text: title
+                },
+                xAxis: {
+                    categories: x_cate
+                },
+                yAxis: {
+                    title: {
+                        text: ytitle
+                    },
+                    labels: {
+                        formatter: function() {
+                            return this.value + ysuffix;
+                        }
+                    }
+                },
+                tooltip: {
+                    formatter: function() {
+                        return '<b>数目&比例</b><br>' +
+                            '数目:  ' + Highcharts.numberFormat(this.y, 0) + '<br>' +
+                            '比例:  ' + Highcharts.numberFormat( this.y * 100 / route_total_num , 2 ) + '%';
+                    }    
+                    
+                },
+                series: mydata
+            }
+		);
+	}
+    
+    function createPie( div_id , title , decimals , suffix , mydata ){
+        JQ('#' + div_id ).highcharts(
+            {
+                title: { 
+                    text: title 
+                },
+                tooltip: {
+                    formatter: function() {
+                        return '<b>数目&比例</b><br>' +
+                            '数目:  ' + Highcharts.numberFormat(this.y, 0) + '<br>' +
+                            '比例:  ' + Highcharts.numberFormat( this.y * 100 / route_total_num , 2 ) + '%';
+                    }    
+                },
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer'
+                    }
+                },
+                series: mydata
+            }
+        );
+	}
+    
+    
+       
+    
+    
+    function draw_route_time_table(  ){
+        var pie_date = [0];
+        var column_date = [0];
+        var pie_name = [];
+        var column_name = [];
+        
+        
+        pie_name.push( "[0," + pie_divide[0] +")" );
+        for( var i = 0 ; i < pie_divide.length ; i++ ){
+            pie_date.push( 0 );
+        }
+        for( var i = 1 ; i < pie_divide.length ; i++ ){
+            pie_name.push( "[" + pie_divide[i-1] + "," + pie_divide[i] + ")" );
+        }
+        pie_name.push( "[" + pie_divide[ pie_divide.length - 1 ] + ",+)" );
+        
+        
+        column_name.push( "[0," + column_divide[0] +")" );
+        for( var i = 0 ; i < column_divide.length ; i++ ){
+            column_date.push( 0 );
+        }
+        for( var i = 1 ; i < column_divide.length ; i++ ){
+            column_name.push( "[" + column_divide[i-1] + "," + column_divide[i] + ")" );
+        }
+        column_name.push( "[" + column_divide[ column_divide.length - 1 ] + ",+)" );
+        
+
+        
+        for( var i = 0 ; i < ratio_dis.length ; i++ ){
+        
+            var j = 0 ;
+            for( j = 0 ; j < pie_divide.length ; j++ ){
+                if( i < pie_divide[j] * index_to_ratio ){
+                    pie_date[j] += ratio_dis[i];
+                    break;
+                }
+            }
+            if( j == pie_divide.length ){
+                pie_date[j] += ratio_dis[i];
+            }
+            
+            
+            j = 0 ;
+            for( j = 0 ; j < column_divide.length ; j++ ){
+                if( i < column_divide[j] * index_to_ratio ){
+                    column_date[j] += ratio_dis[i];
+                    break;
+                }
+            }
+            if( j == column_divide.length ){
+                column_date[j] += ratio_dis[i];
+            }
+        }
+    
+        
+    
+    
+    
+    
+    
+    
+        var mydata=[{
+            name: '次数',
+            data: column_date
+        }];
+        
+        
+        
+        createColumn( "route_time_ratio_dis_column" , 
+                "时间比率分布（真值/估计值, 平均值：" +  all_avg_ratio + " ）" , 
+                "次数" , 
+                column_name  , 
+                0 , 
+                "" , 
+                "" , 
+                mydata );
+        
+        
+        
+        
+        var in_date = [];
+        for( var i = 0 ; i < pie_date.length ; i ++ ){
+            in_date.push( [ pie_name[i] , pie_date[i] ] );
+        }
+        mydata=[
+            {
+                type: 'pie',
+                name: '次数',
+                data: in_date
+            }
+        ];
+        createPie( "route_time_ratio_dis_pie" , "时间比率分布" , 0 , "" , mydata );
+      
+      
+      
+        var cur_point_interval = 24 * 3600 * 1000;
+        var cur_start_time = day_range[0] * 3600 * 1000;
+        var cur_avg_ratio = day_avg_ratio;
+        var cur_title = "时间比率日平均";
+        if( show_type == "week" ){
+            cur_point_interval = 7 * 24 * 3600 * 1000;
+            cur_start_time = week_range[0] * 3600 * 1000;
+            cur_avg_ratio = week_avg_ratio;
+            cur_title = "时间比率周平均";
+        }
+      
+        mydata=[];
+        mydata.push(
+            {
+                name : cur_title,
+                pointInterval:  cur_point_interval,
+                pointStart: cur_start_time ,
+                data: cur_avg_ratio
+            }
+        );
+        createStockChart( "route_time_ratio_dis_stock" , cur_title + "统计，去除3%的最大最小值" , "时间比率" , 2 , '' , '' , mydata , true );
+      
+      
+      
+      
+      
+      
+    }
+    
+    
+    
+    
+    
+    
+    function button_time_ratio_info_click(){
+        var srcf = parseFloat( select_ratio_center_from.value );
+        var srct = parseFloat( select_ratio_center_to.value );
+        if( srcf > srct ){
+            pie_divide[0] = srct ;
+            pie_divide[1] = srcf ;
+        }else{
+            pie_divide[0] = srcf ;
+            pie_divide[1] = srct ;
+        }
+        draw_route_time_table();
+    }
+    
+    
+    
+    
+    function button_day_click(){
+        show_type = "day";
+        draw_route_time_table();
+    }
+    
+    function button_week_click(){
+        show_type = "week";
+        draw_route_time_table();
+    }
+    
+    
+    
+    
+    
+    
+    
+    var xmlHTTP     = new XMLHttpRequest();
+    function query_info_done(){
+        if( xmlHTTP.readyState == 4 && xmlHTTP.status == 200){
+            json_obj = eval('(' + xmlHTTP.responseText + ')');
+            
+            document.getElementById("datepicker_from").value = json_obj['date_from'];
+            document.getElementById("datepicker_to").value   = json_obj['date_to'];
+            
+            data_len    = json_obj['data_len'];
+            ratio_dis   = json_obj['ratio_dis'];
+            day_range   = json_obj['day_range'];
+            week_range  = json_obj['week_range'];
+            all_avg_ratio   = json_obj['all_avg_ratio'];
+            day_avg_ratio   = json_obj['day_avg_ratio'];
+            week_avg_ratio  = json_obj['week_avg_ratio'];
+            if( data_len <= 0 ){
+                alert( "该查询日期内无数据");
+                exit(0) ;
+            }
+            
+            all_avg_ratio = Math.round( all_avg_ratio * 100 ) / 100;
+            
+            route_total_num = 0;
+            for( var i = 0 ; i < ratio_dis.length ; i++ ){
+                route_total_num += parseInt( ratio_dis[i] );
+            }
+            draw_route_time_table();
+            //init_select_ratio_range();
+        }
+    }
+
+
+
+    function search_button_on_click(  ){
+        var url = host + ":" + port_num + "/route_time_ratio_get_data";
+        var info = "";
+        info = info + "date_from=" + document.getElementById("datepicker_from").value ;
+        info = info + "&date_to=" + document.getElementById("datepicker_to").value ;
+        xmlHTTP.open("POST", url, true);
+        xmlHTTP.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+        xmlHTTP.onreadystatechange = query_info_done;
+        xmlHTTP.send( info );
+    }
+    
+    
+    
+    
+    search_button_on_click();
+    
+    
+</script>
+
+
+
+</html>

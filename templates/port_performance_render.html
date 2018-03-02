@@ -1,0 +1,1053 @@
+$def with( global_info )
+
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>端性能统计</title>
+	
+    <script src="/static/js/jquery.min.js"></script>    
+    <script src="/static/js/highstock.js"></script>
+    <script src="/static/js/exporting.js"></script> 
+    <script src="/static/js/jquery.min.map"></script>   
+    <script src="/static/jquery-ui-1.10.3/ui/jquery.ui.core.js"></script>
+    <script src="/static/jquery-ui-1.10.3/ui/jquery.ui.widget.js"></script>
+    <script src="/static/jquery-ui-1.10.3/ui/jquery.ui.datepicker.js"></script>
+    <link rel="stylesheet" href="/static/jquery-ui-1.10.3/themes/base/jquery.ui.all.css">
+    <link rel="stylesheet" href="/static/jquery-ui-1.10.3/demos/demos.css">
+    <style type="text/css">
+        html,body
+        {
+            height: 100%;
+            margin: 0;
+            
+        }
+        .left
+        {
+            float: left;
+            height: 6000px;
+            width: 200px;
+            background:#88ee88;
+            border: 5px solid #88ee88 ;
+        }
+        .right
+        {
+            margin-left:210px; 
+            height: 6000px;
+            width: 1100px;
+            background:#eeffee;
+            border: 3px solid #80e080 ;
+        }  
+        .divtool
+        {
+            width: 100%;
+            height: 100px;
+            box-shadow: 0 0 1px #0f0f0f;
+        }
+        .divcomment
+        {
+            width: 100%;
+            height: 5900px ;
+            background:#ffffee ;
+        }
+        .divtoolname
+        {
+            width: 100%;
+            height: 35%;
+            text-align:center;
+            background:#ccffdd;
+            box-shadow: 0 0 3px #0f0f0f;
+        }
+        .divtooltools
+        {
+            width: 100%;
+            height: 63%;
+            box-shadow: 0 0 3px #0f0f0f;
+        }
+        .buttonLeft
+        {
+            width:80%;
+            height:30px;
+            box-shadow: 0 0 1px #0f0f0f;
+        }
+    </style>
+</head>
+<body>
+    <form id="log_form" method="POST">
+        <div class="left" id="div_left">
+            <div style="width:100%;height:130px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >概览信息</a>
+                    </div>
+                    <p><input type="button" value="导航统计概览" class="buttonLeft" onclick="button_jump_click('top_all')"></p>
+                    <p><input type="button" value="导航关键统计报表" class="buttonLeft" onclick="button_jump_click('kes_stat')"></p>
+                </center>
+            </div>
+            </br>
+            <div style="width:100%;height:150px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >日志信息查询</a>
+                    </div>
+                    <p><input type="button" value="错误日志查询" class="buttonLeft" onclick="button_jump_click('error_log')"></p>
+                    <p><input type="button" value="cuid查询" class="buttonLeft" onclick="button_jump_click('cuid_log')" ></p>
+                </center>
+            </div>
+            </br>
+            <div style="width:100%;height:300px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >端信息查询</a>
+                    </div>
+                    <p><input type="button" value="端pv统计"  class="buttonLeft"  onclick="button_jump_click('port_pv')" ></p>
+                    <p><input type="button" value="端错误率统计"  class="buttonLeft"  onclick="button_jump_click('port_error')" ></p>
+                    <p><input type="button" value="端非法率统计"  class="buttonLeft"  onclick="button_jump_click('port_illegal')" ></p>
+                    <p><input type="button" value="端数据量统计"  class="buttonLeft"  onclick="button_jump_click('port_data')" ></p>
+                    <p><input type="button" value="端性能统计"  class="buttonLeft"  onclick="button_jump_click('port_performance')" ></p>
+                    <p><input type="button" value="偏航统计" class="buttonLeft" onclick="button_jump_click('yawpos_summary')" ></p>
+                </center>
+            </div>
+            </br>
+            <div style="width:100%;height:300px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >version信息查询</a>
+                    </div>
+                    <p><input type="button" value="version-pv统计"  class="buttonLeft" onclick="button_jump_click('version_pv')" ></p>
+                    <p><input type="button" value="version错误率统计"  class="buttonLeft" onclick="button_jump_click('version_error')" ></p>
+                    <p><input type="button" value="version非法率统计"  class="buttonLeft" onclick="button_jump_click('version_illegal')" ></p>
+                    <p><input type="button" value="version数据量统计" class="buttonLeft"  onclick="button_jump_click('version_data')" ></p>
+                    <p><input type="button" value="version性能统计" class="buttonLeft" onclick="button_jump_click('version_performance')" ></p>
+                    <p><input type="button" value="模块性能统计" class="buttonLeft" onclick="button_jump_click('module_performance')" ></p>
+                </center>
+            </div>
+            </br>
+            <div style="width:100%;height:120px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >用户反馈信息查询</a>
+                    </div>
+                    <p><input type="button" value="用户吐槽类型统计"  class="buttonLeft" onclick="button_jump_click('naviure_type_flag')" ></p>
+                </center>
+            </div>
+            </br>
+            <div style="width:100%;height:300px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >其他信息查询</a>
+                    </div>
+                    <p><input type="button" value="multinavi session 统计" class="buttonLeft" onclick="button_jump_click('multinavi_session_query')" ></p>
+                    <p><input type="button" value="特殊路线pv统计" class="buttonLeft" onclick="button_jump_click('special_route_type_pv')" ></p>
+                    <p><input type="button" value="城市query统计" class="buttonLeft" onclick="button_jump_click('city_query')" ></p>
+                    <p><input type="button" value="多路线召回信息统计" class="buttonLeft" onclick="button_jump_click('multi_route_recall')" ></p>
+                    <p><input type="button" value="导航偏好信息统计" class="buttonLeft" onclick="button_jump_click('navigation_preference')" ></p>
+                    <p><input type="button" value="时间评估统计" class="buttonLeft" onclick="button_jump_click('route_time_ratio')" ></p>
+                </center>
+            </div>
+        </div>
+		<div class="right" id="div_right">
+			<div class="divtool">
+				<div class="divtoolname">
+					<a style="font-size:20px">端性能统计</a>
+					
+				</div>
+				<div class="divtooltools">
+					<div style="margin-left:2px;float:left;width:250px;height:98%;background:#bcdeff;box-shadow: 0 0 1px #000;">
+						<center>
+							<div style="width:100%;height:22px;background:#abcdef;">
+								<a style="font-size:20px;" >时间选择 </a>
+							</div>
+							<div style="width:100%;height:5px;"></div>
+							From: <input type="text" id="datepicker_from" name="datepicker_from" style="width:80px">
+							To: <input type="text" id="datepicker_to" name="datepicker_to" style="width:80px">
+						</center>
+					</div>
+					<div style="margin-left:3px;float:left;width:120px;height:98%;background:#bcdeff;box-shadow: 0 0 1px #000;">
+						<center>
+							<div style="width:100%;height:22px;background:#abcdef;">
+								<a style="font-size:20px;" >查询操作 </a>
+							</div>
+							<div style="width:100%;height:5px;"></div>
+							<input type="button" value="查询"  name="Button_Search" id="Button_Search" onclick="search_button_on_click()" style="width:100px;height:25px;box-shadow: 0 0 1px #0f0f0f;">
+						</center>
+					</div>
+					<div style="margin-left:3px;float:left;width:360px;height:98%;background:#bcdeff;box-shadow: 0 0 1px #000;">
+						<center>
+							<div style="width:100%;height:22px;background:#abcdef;">
+								<a style="font-size:20px;" >展示选项 </a>
+							</div>
+							<div style="width:100%;height:5px;"></div>
+							<input type="button" id="button_hour" name="button_hour" value="按小时展示" style="width:100px;height:25px;box-shadow: 0 0 1px #0f0f0f;" onclick="button_hour_click()" >
+							<input type="button" id="button_day" name="button_day" value="按天数展示" style="width:100px;height:25px;box-shadow: 0 0 1px #0f0f0f;" onclick="button_day_click()" >
+							<input type="button" id="button_week" name="button_week" value="按周展示" style="width:100px;height:25px;box-shadow: 0 0 1px #0f0f0f;" onclick="button_week_click()" >
+						</center>
+					</div>
+				</div>
+			</div>
+			<div class="divcomment">
+				<br/>
+				<div style="width:100%;height:1500px">
+				<br/>
+				<div style="width:100%;height:2035px">
+                    <div id="port_data_container" style="height:500px;width:100%;background:#0ff;box-shadow: 0 0 1px #0f0f0f;"></div>
+                    <div style="height:5px;width:100%;"></div>
+                    <div id="port_data_sum_container" style="height:500px;width:100%;background:#0ff;box-shadow: 0 0 1px #0f0f0f;"></div>
+                    <div style="height:5px;width:100%;"></div>
+                    <div id="port_data_vec_container" style="height:500px;width:100%;background:#0ff;box-shadow: 0 0 1px #0f0f0f;"></div>
+                    <div style="height:5px;width:100%;"></div>
+                    <div id="port_ot_ratio_container" style="height:500px;width:100%;background:#0ff;box-shadow: 0 0 1px #0f0f0f;"></div>
+                </div>
+                <center>
+                    <div style="width:100%;height:40px;background:#a0b0f0"></div>
+                    <div style="width:100%;height:30px;background:#ccc;">
+                        <a style="font-size:20px">qt-version选择：</a>
+                        <select name="select_port_name" id="select_port_name">
+                        </select>
+                        <input type="button" value="端到qt-version口查询" onclick="button_qt_version_port_info_click()" >
+                    </div>
+                    <div id="port_qv_data_container" style="height:475px;width:85%;background:#0ff;box-shadow: 0 0 1px #0f0f0f;"></div>
+                    <div style="width:100%;height:5px;"></div>
+                    <div id="port_qv_data_sum_container" style="height:475px;width:85%;background:#0ff;box-shadow: 0 0 1px #0f0f0f;"></div>
+                    <div style="width:100%;height:5px;"></div>
+                    <div id="port_qv_data_vec_container" style="height:475px;width:85%;background:#0ff;box-shadow: 0 0 1px #0f0f0f;"></div>
+                    <div style="width:100%;height:5px;"></div>
+                    <div id="port_qv_ot_ratio_container" style="height:475px;width:85%;background:#0ff;box-shadow: 0 0 1px #0f0f0f;"></div>
+                </center>
+			</div>
+		</div>
+	</form>
+</body>
+
+
+
+<script type="text/javascript">
+	JQ = jQuery.noConflict();
+	
+	var host_port	= $:global_info ;
+	var host		= "http://" + host_port[0] ;
+	var port_num	= host_port[1] ;
+	function button_jump_click( target_page ){
+		var url = host + ":" + port_num + "/" + target_page;
+		window.open( url , "_self");
+	}
+	
+	JQ(function() {
+		JQ( "#datepicker_from" ).datepicker();
+	});
+	
+	JQ(function() {
+		JQ( "#datepicker_to" ).datepicker();
+	});
+	
+    var show_model = "DAY";
+	var data_dict  = {};
+    var port_data_dict = {};
+	
+	var vec_show = [];
+    
+	var port_name_2_port_name_show = {}
+    port_name_2_port_name_show[ "webmap" ] = "webmap";
+    port_name_2_port_name_show[ "webapp" ] = "webapp";
+    port_name_2_port_name_show[ "webapi" ] = "webapi";
+    port_name_2_port_name_show[ "unknown" ] = "来源未知";
+    port_name_2_port_name_show[ "baidu_map" ] = "百度地图";
+    port_name_2_port_name_show[ "baidu_navi" ] = "百度导航";
+    port_name_2_port_name_show[ "navi_sdk" ] = "导航SDK";
+    port_name_2_port_name_show[ "other_service" ] = "其他后端服务";
+    port_name_2_port_name_show[ "remove_port" ] = "缺失resid";
+
+	function createStockChart( div_id , title , ytitle , decimals , suffix , ysuffix , mydata , need_point ){
+		JQ('#' + div_id ).highcharts
+		(
+			'StockChart',
+			{
+				chart: {
+					type: 'spline'
+				},
+				credits: {
+					enabled: false
+				},
+				title: {
+					text: title
+				},
+				xAxis: {
+					type: 'datetime'
+				},
+				yAxis: {
+					title: {
+						text: ytitle
+					},
+					labels: {
+						formatter: function() {
+							return this.value + ysuffix
+						}
+					}
+                },
+				legend: { 
+					enabled: true 
+				},
+				tooltip: {
+					crosshairs: true,
+					shared: true,
+					useHTML : true,
+					headerFormat : '<small>{point.key}</small><table>',
+					pointFormat : '<tr><td style="color:{series.color}">{series.name}:</td>' + '<td style="text-align:right"><b>{point.y}</b></td></tr>',
+					footerFormat: '</table>',
+					valueDecimals : decimals,
+					valueSuffix: suffix
+				},
+				plotOptions: {
+					series: {
+						marker: {
+							enabled: need_point
+						}
+					}
+				},
+				navigator: {
+					margin: 2,
+					height: 20
+				},
+				rangeSelector: {
+					enabled: false
+				},
+				series: mydata
+			}
+		);
+	}
+	
+    
+    
+    function createStockChartWeekExtra( div_id , title , ytitle , decimals , suffix , ysuffix , mydata , need_point ){
+		JQ('#' + div_id ).highcharts
+		(
+			'StockChart',
+			{
+				chart: {
+					type: 'spline'
+				},
+				credits: {
+					enabled: false
+				},
+				title: {
+					text: title
+				},
+				xAxis: {
+					type: 'datetime'
+				},
+				yAxis: {
+					title: {
+						text: ytitle
+					},
+					labels: {
+						formatter: function() {
+							return this.value + ysuffix
+						}
+					}
+                },
+				legend: { 
+					enabled: true 
+				},
+				tooltip:{
+                    crosshairs: true,
+					shared: true,
+					useHTML : true,
+					headerFormat : '<small>{point.key}</small></br>名称：数值（周的日平均）<table>',
+					pointFormat : '<tr><td style="color:{series.color}">{series.name}:</td>' + 
+                                    '<td style="text-align:right"><b>{point.y:.'+ decimals + 'f}' + suffix + '</b></td>' + 
+                                    '<td style="text-align:right"><b>({point.extra:.'+ decimals + 'f}' + suffix + ')</b></td></tr>',
+					footerFormat: '</table>'
+                },
+				plotOptions: {
+					series: {
+						marker: {
+							enabled: need_point
+						}
+					}
+				},
+				navigator: {
+					margin: 2,
+					height: 20
+				},
+				rangeSelector: {
+					enabled: false
+				},
+				series: mydata
+			}
+		);
+	}
+    
+    
+    function createStockChartExtra( div_id , title , ytitle , decimals , suffix , ysuffix , mydata , need_point , extra_name ){
+		JQ('#' + div_id ).highcharts
+		(
+			'StockChart',
+			{
+				chart: {
+					type: 'spline'
+				},
+				credits: {
+					enabled: false
+				},
+				title: {
+					text: title
+				},
+				xAxis: {
+					type: 'datetime'
+				},
+				yAxis: {
+					title: {
+						text: ytitle
+					},
+					labels: {
+						formatter: function() {
+							return this.value + ysuffix
+						}
+					}
+                },
+				legend: { 
+					enabled: true 
+				},
+				tooltip:{
+                    crosshairs: true,
+					shared: true,
+					useHTML : true,
+					headerFormat : '<small>{point.key}</small><table>',
+					pointFormat : '<tr><td style="color:{series.color}">{series.name}:</td>' + 
+                                    '<td style="text-align:right"><b>{point.y}</b></td>' + 
+                                    '<td style="text-align:right"><b>({point.extra}' + extra_name + ')</b></td></tr>',
+					footerFormat: '</table>',
+					valueDecimals : decimals,
+					valueSuffix: suffix
+                },
+				plotOptions: {
+					series: {
+						marker: {
+							enabled: need_point
+						}
+					}
+				},
+				navigator: {
+					margin: 2,
+					height: 20
+				},
+				rangeSelector: {
+					enabled: false
+				},
+				series: mydata
+			}
+		);
+	}
+    
+    function draw_tables(){
+        var raw_name_list  = data_dict["name_list"];
+        var name_list = [];
+        for( var i = 0 ; i < raw_name_list.length; i++ ){
+            name_list.push( port_name_2_port_name_show[ raw_name_list[i] ] );
+        }
+        
+        var all_data_list  = data_dict["all_data_list"] ;
+        var data_vector	   = data_dict["data_vector"] ;
+        var data_div_list  = data_dict["data_div_list"] ;
+        var data_div_num_list  = data_dict["data_div_num_list"] ;
+        var start_time     = parseInt( data_dict["week_range"][0] ) * 3600 * 1000;
+        var point_interval = 7 * 24 * 3600 * 1000;
+        var show_data_list = data_dict["week_data_list"];
+        var show_ot_num_list = data_dict["week_ot_num_list"];
+        var show_ot_ratio_list = data_dict["week_ot_ratio_list"];
+        var show_total_ot_num_list = data_dict["week_total_ot_num_list"];
+        var show_total_ot_ratio_list = data_dict["week_total_ot_ratio_list"];
+        var show_total_avg_time = data_dict["week_total_avg_time"];
+        var need_point = true;
+        
+        var show_week_day_data_list = data_dict["week_day_data_list"];
+        var show_week_day_total_avg_time = data_dict["week_day_total_avg_time"];
+        
+        if( show_model == "HOUR" ){
+            start_time     = parseInt( data_dict["hour_range"][0] ) * 3600 * 1000;
+            point_interval = 3600 * 1000;
+            show_data_list = data_dict["hour_data_list"];
+            show_ot_num_list = data_dict["hour_ot_num_list"];
+            show_ot_ratio_list = data_dict["hour_ot_ratio_list"];
+            show_total_ot_num_list = data_dict["hour_total_ot_num_list"];
+            show_total_ot_ratio_list = data_dict["hour_total_ot_ratio_list"];
+            show_total_avg_time = data_dict["hour_total_avg_time"];
+            show_week_day_data_list = [];
+            show_week_day_total_avg_time = [];
+            need_point = false;
+        }else if( show_model == "DAY" ){
+            start_time     = parseInt( data_dict["day_range"][0] ) * 3600 * 1000;
+            point_interval = 24 * 3600 * 1000;
+            show_data_list = data_dict["day_data_list"];
+            show_ot_num_list = data_dict["day_ot_num_list"];
+            show_ot_ratio_list = data_dict["day_ot_ratio_list"];
+            show_total_ot_num_list = data_dict["day_total_ot_num_list"];
+            show_total_ot_ratio_list = data_dict["day_total_ot_ratio_list"];
+            show_total_avg_time = data_dict["day_total_avg_time"];
+            show_week_day_data_list = data_dict["day_week_data_list"];
+            show_week_day_total_avg_time = data_dict["day_week_total_avg_time"];
+            need_point = true;
+        }
+        
+		var mydata=[];
+        var tmp_data = [];
+        if( show_model == "HOUR" ){
+            mydata.push(
+                {
+                    name : "总平均用时",
+                    pointInterval: point_interval,
+                    pointStart: start_time ,
+                    data: show_total_avg_time
+                }
+            );
+            for( var i = 0 ; i < name_list.length ; i++ ){
+                mydata.push(
+                    {
+                        name : name_list[i],
+                        pointInterval: point_interval,
+                        pointStart: start_time ,
+                        data: show_data_list[i]
+                    }
+                );
+            }
+            createStockChart( "port_data_container" , "端性能统计" , "平均用时" , 0 , 'ms' , 'ms' , mydata , need_point );
+        }else{
+            tmp_data = [];
+            for( var j = 0 ; j < show_total_avg_time.length ; j++ ){
+                tmp_data.push(
+                    {
+                        y:show_total_avg_time[j],
+                        extra:show_week_day_total_avg_time[j]
+                    }
+                );
+            }
+            mydata.push(
+                {
+                    name : "总平均用时",
+                    pointInterval: point_interval,
+                    pointStart: start_time ,
+                    data: tmp_data
+                }
+            );
+            for( var i = 0 ; i < name_list.length ; i++ ){
+                tmp_data = [];
+                for( var j = 0 ; j < show_data_list[i].length ; j++ ){
+                    tmp_data.push(
+                        {
+                            y:show_data_list[i][j],
+                            extra:show_week_day_data_list[i][j]
+                        }
+                    );
+                }
+                mydata.push(
+                    {
+                        name : name_list[i],
+                        pointInterval: point_interval,
+                        pointStart: start_time ,
+                        data: tmp_data
+                    }
+                );
+            }
+            createStockChartWeekExtra( "port_data_container" , "端性能统计" , "平均用时" , 0 , 'ms' , 'ms' , mydata , need_point );
+        }
+        
+        
+        mydata = [];
+        tmp_data = [];
+        for( var i = 0 ; i < show_total_ot_ratio_list.length ; i++ ){
+            tmp_data.push(
+                {
+                    y:show_total_ot_ratio_list[i],
+                    extra:show_total_ot_num_list[i]
+                }
+            );
+        }
+        mydata.push(
+            {
+                name : "总超时率",
+                pointInterval: point_interval,
+                pointStart: start_time ,
+                data: tmp_data
+            }
+        );
+        for( var i = 0 ; i < name_list.length ; i++ ){
+            tmp_data = [];
+            for( var j = 0 ; j < show_ot_ratio_list[i].length ; j++ ){
+                tmp_data.push(
+                    {
+                        y:show_ot_ratio_list[i][j],
+                        extra:show_ot_num_list[i][j]
+                    }
+                );
+            }
+			mydata.push(
+				{
+					name : name_list[i],
+					pointInterval: point_interval,
+					pointStart: start_time ,
+					data: tmp_data ,
+				}
+			);
+		}
+        createStockChartExtra( "port_ot_ratio_container" , "端超时率（超时次数/请求次数）统计" , "超时率" , 2 , '%' , '%' , mydata , need_point , '次' );
+        
+        
+        
+        
+        var cur_name_list = [];
+        mydata = [];
+        for( var i = 0 ; i < name_list.length ; i++ ){
+            cur_name_list.push( name_list[i] );
+            mydata.push( all_data_list[i] );
+        }
+        
+        JQ('#port_data_sum_container').highcharts({
+			chart: {
+				type: 'column'
+			},
+			title: {
+				text: '端性能统计'
+			},
+			xAxis: {
+				categories: cur_name_list ,
+				labels: {
+					rotation: -45,
+					align: 'right',
+					style: {
+						fontSize: '13px',
+						fontFamily: 'Verdana, sans-serif'
+					}
+				}
+			},
+			yAxis: {
+				min: 0,
+				title: {
+					text: '平均用时'
+				},
+				labels: {
+					formatter: function() {
+						return this.value +'ms'
+					}
+				}
+			},
+			legend: {
+				enabled: false
+			},
+			credits: { 
+				enabled: false 
+			},
+			tooltip: {
+				crosshairs: true,
+				shared: true,
+				useHTML : true,
+				headerFormat : '<small>{point.key}</small><table>',
+				pointFormat : '<tr><td style="color:{series.color}">{series.name}:</td>' + '<td style="text-align:right"><b>{point.y}</b></td></tr>',
+				footerFormat: '</table>',
+				valueDecimals : 2,
+				valueSuffix: 'ms'
+					
+			},
+			series: [{
+				name: '端性能统计',
+				data: mydata
+			}]
+		});
+        
+        var cur_name_list = [];
+        mydata = [];
+        for( var i = 0 ; i < name_list.length ; i++ ){
+            var tmp_data = [];
+            for( var j = 0 ; j < data_div_list[i].length ; j++ ){
+                tmp_data.push(
+                    {
+                        y:data_div_list[i][j],
+                        ynum:data_div_num_list[i][j]
+                    }
+                );
+            }
+			mydata.push(
+				{
+					name : name_list[i],
+					data : tmp_data
+				}
+			);
+		}
+        
+        JQ('#port_data_vec_container').highcharts({
+			chart: {
+				type: 'column'
+			},
+			title: {
+				text: '端用时分布'
+			},
+			xAxis: {
+				categories: vec_show 
+			},
+			yAxis: {
+				min: 0,
+				title: {
+					text: '分布比例'
+				},
+				labels: {
+					formatter: function() {
+						return this.value +'%'
+					}
+				}
+			},
+			credits: { 
+				enabled: false 
+			},
+            tooltip:{
+                crosshairs: true,
+                shared:true,
+                useHTML : true,
+                formatter : function(){
+                    res = '<small>' + this.x + '</small>'
+                    res = res + '<table>';
+                    for( var i = 0 ; i < this.points.length ; i++ ){
+                        res = res + 
+                            '<tr>' + 
+                                '<td style="color:' + this.points[i].series.color + '">' + this.points[i].series.name + '</td>' + 
+                                '<td>' +  Highcharts.numberFormat( this.points[i].point.y , 2 ) + '%</td>' + 
+                                '<td>(' + this.points[i].point.ynum + '次)</td>' + 
+                            '</tr>';
+                    }
+                    res = res + '</table>';
+                    return res;
+                }
+            },
+			series: mydata
+		});
+        
+        
+    }
+    
+    
+	function button_hour_click(){
+        show_model = "HOUR";
+        draw_tables();
+        draw_port_tables();
+	}
+	
+	
+	function button_day_click(){
+        show_model = "DAY";
+        draw_tables();
+        draw_port_tables();
+	}
+	
+	function button_week_click(){
+        show_model = "WEEK";
+        draw_tables();
+        draw_port_tables();
+	}
+	
+       
+    
+    function init_data(){
+        var raw_name_list  = data_dict["name_list"];
+        var name_list = [];
+        for( var i = 0 ; i < raw_name_list.length; i++ ){
+            name_list.push( port_name_2_port_name_show[ raw_name_list[i] ] );
+        }
+        var data_vector = data_dict["data_vector"];
+        var day_data_list = data_dict["day_data_list"];
+        var week_data_list = data_dict["week_data_list"];
+        
+        vec_show	= [];
+        vec_show.push( "[0," + data_vector[0] + ")" );
+        for( var i = 0 ; i < data_vector.length - 1 ; i++ ){
+            vec_show.push( "[" + data_vector[i] + "," + data_vector[i + 1] + ")" );
+        }
+        vec_show.push( "[" + data_vector[ data_vector.length - 1 ] + "," + data_vector[ data_vector.length - 1 ] + "+)" );
+
+        
+        var select_innerHTML = "";
+        for( var i = 0 ; i < name_list.length ; i++ ){
+            select_innerHTML = select_innerHTML + 
+                "<option value='" + raw_name_list[i] + "'>" + name_list[i] + "</option>"; 
+        }  
+        document.getElementById("select_port_name").innerHTML = select_innerHTML ;
+        
+        
+    }
+    
+    
+    
+	var xmlHTTP = new XMLHttpRequest();
+    function query_info_done(){
+        if( xmlHTTP.readyState == 4 && xmlHTTP.status == 200){
+            json_obj = eval('(' + xmlHTTP.responseText + ')');
+            document.getElementById("datepicker_from").value = json_obj['date_from'];
+            document.getElementById("datepicker_to").value   = json_obj['date_to'];
+            data_dict = json_obj;
+            data_len  = data_dict['data_len'];
+            if( data_len <= 0 ){
+                alert( "该查询日期内无数据");
+                exit(0) ;
+            }
+            
+            init_data( );
+            show_model = "DAY";
+            draw_tables();
+            button_qt_version_port_info_click();
+        }
+    }
+
+
+
+    function search_button_on_click(  ){
+        var url = host + ":" + port_num + "/port_performance_get_data";
+        var info = "";
+        info = info + "date_from=" + document.getElementById("datepicker_from").value ;
+        info = info + "&date_to=" + document.getElementById("datepicker_to").value ;
+        xmlHTTP.open("POST", url, true);
+        xmlHTTP.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+        xmlHTTP.onreadystatechange = query_info_done;
+        xmlHTTP.send( info );
+    }
+    
+	
+    
+    function draw_port_tables(){
+        var name_list  = port_data_dict["name_list"];
+        var all_data_list  = port_data_dict["all_data_list"] ;
+        var data_vector	   = port_data_dict["data_vector"] ;
+        var data_div_list  = port_data_dict["data_div_list"] ;
+        var data_div_num_list  = port_data_dict["data_div_num_list"] ;
+        var start_time     = parseInt( port_data_dict["week_range"][0] ) * 3600 * 1000;
+        var point_interval = 7 * 24 * 3600 * 1000;
+        var show_data_list = port_data_dict["week_data_list"];
+        var show_ot_num_list = port_data_dict["week_ot_num_list"];
+        var show_ot_ratio_list = port_data_dict["week_ot_ratio_list"];
+        var need_point = true;
+        
+        if( show_model == "HOUR" ){
+            start_time     = parseInt( port_data_dict["hour_range"][0] ) * 3600 * 1000;
+            point_interval = 3600 * 1000;
+            show_data_list = port_data_dict["hour_data_list"];
+            show_ot_num_list = port_data_dict["hour_ot_num_list"];
+            show_ot_ratio_list = port_data_dict["hour_ot_ratio_list"];
+            need_point = false;
+        }else if( show_model == "DAY" ){
+            start_time     = parseInt( port_data_dict["day_range"][0] ) * 3600 * 1000;
+            point_interval = 24 * 3600 * 1000;
+            show_data_list = port_data_dict["day_data_list"];
+            show_ot_num_list = port_data_dict["day_ot_num_list"];
+            show_ot_ratio_list = port_data_dict["day_ot_ratio_list"];
+            need_point = true;
+        }
+        
+		var mydata=[];
+		for( var i = 0 ; i < name_list.length ; i++ ){
+			mydata.push(
+				{
+					name : name_list[i],
+					pointInterval: point_interval,
+					pointStart: start_time ,
+					data: show_data_list[i] ,
+				}
+			);
+		}
+        
+		createStockChart( "port_qv_data_container" , "version性能统计" , "平均用时" , 0 , 'ms' , 'ms' , mydata , need_point );
+        
+        
+        mydata = [];
+        for( var i = 0 ; i < name_list.length ; i++ ){
+            var tmp_data = [];
+            for( var j = 0 ; j < show_ot_ratio_list[i].length ; j++ ){
+                tmp_data.push(
+                    {
+                        y:show_ot_ratio_list[i][j],
+                        extra:show_ot_num_list[i][j]
+                    }
+                );
+            }
+			mydata.push(
+				{
+					name : name_list[i],
+					pointInterval: point_interval,
+					pointStart: start_time ,
+					data: tmp_data ,
+				}
+			);
+		}
+        createStockChartExtra( "port_qv_ot_ratio_container" , "version超时率（超时次数/请求次数）统计" , "超时率" , 2 , '%' , '%' , mydata , need_point , '次' );
+        
+        var cur_name_list = [];
+        mydata = [];
+        for( var i = 0 ; i < name_list.length ; i++ ){
+            cur_name_list.push( name_list[i] );
+            mydata.push( all_data_list[i] );
+        }
+        
+        JQ('#port_qv_data_sum_container').highcharts({
+			chart: {
+				type: 'column'
+			},
+			title: {
+				text: 'version性能统计'
+			},
+			xAxis: {
+				categories: cur_name_list ,
+				labels: {
+					rotation: -45,
+					align: 'right',
+					style: {
+						fontSize: '13px',
+						fontFamily: 'Verdana, sans-serif'
+					}
+				}
+			},
+			yAxis: {
+				min: 0,
+				title: {
+					text: '平均用时'
+				},
+				labels: {
+					formatter: function() {
+						return this.value +'ms'
+					}
+				}
+			},
+			legend: {
+				enabled: false
+			},
+			credits: { 
+				enabled: false 
+			},
+			tooltip: {
+				crosshairs: true,
+				shared: true,
+				useHTML : true,
+				headerFormat : '<small>{point.key}</small><table>',
+				pointFormat : '<tr><td style="color:{series.color}">{series.name}:</td>' + '<td style="text-align:right"><b>{point.y}</b></td></tr>',
+				footerFormat: '</table>',
+				valueDecimals : 2,
+				valueSuffix: 'ms'
+					
+			},
+			series: [{
+				name: 'version性能统计',
+				data: mydata
+			}]
+		});
+        
+        
+        var cur_name_list = [];
+        mydata = [];
+        for( var i = 0 ; i < name_list.length ; i++ ){
+            var tmp_data = [];
+            for( var j = 0 ; j < data_div_list[i].length ; j++ ){
+                tmp_data.push(
+                    {
+                        y:data_div_list[i][j],
+                        ynum:data_div_num_list[i][j]
+                    }
+                );
+            }
+			mydata.push(
+				{
+					name : name_list[i],
+					data : tmp_data
+				}
+			);
+		}
+        
+        
+        JQ('#port_qv_data_vec_container').highcharts({
+			chart: {
+				type: 'column'
+			},
+			title: {
+				text: 'version用时分布'
+			},
+			xAxis: {
+				categories: vec_show 
+			},
+			yAxis: {
+				min: 0,
+				title: {
+					text: '分布比例'
+				},
+				labels: {
+					formatter: function() {
+						return this.value +'%'
+					}
+				}
+			},
+			credits: { 
+				enabled: false 
+			},
+            tooltip:{
+                crosshairs: true,
+                shared:true,
+                useHTML : true,
+                formatter : function(){
+                    res = '<small>' + this.x + '</small>'
+                    res = res + '<table>';
+                    for( var i = 0 ; i < this.points.length ; i++ ){
+                        res = res + 
+                            '<tr>' + 
+                                '<td style="color:' + this.points[i].series.color + '">' + this.points[i].series.name + '</td>' + 
+                                '<td>' +  Highcharts.numberFormat( this.points[i].point.y , 2 ) + '%</td>' + 
+                                '<td>(' + this.points[i].point.ynum + '次)</td>' + 
+                            '</tr>';
+                    }
+                    res = res + '</table>';
+                    return res;
+                }
+            },
+			series: mydata
+		});
+        
+        
+    }
+    
+    
+    
+    
+    var xmlHTTP_port = new XMLHttpRequest();
+    function port_query_info_done(){
+        if( xmlHTTP_port.readyState == 4 && xmlHTTP_port.status == 200){
+            json_obj = eval('(' + xmlHTTP_port.responseText + ')');
+            port_data_dict = json_obj;
+            draw_port_tables();
+        }
+    }
+    
+    
+    
+    function button_qt_version_port_info_click(){
+        var url = host + ":" + port_num + "/port2version_performance_get_data";
+        var info = "";
+        info = info + "date_from=" + document.getElementById("datepicker_from").value ;
+        info = info + "&date_to=" + document.getElementById("datepicker_to").value ;
+        info = info + "&port_name=" + document.getElementById("select_port_name").value ;
+        xmlHTTP_port.open("POST", url, true);
+        xmlHTTP_port.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+        xmlHTTP_port.onreadystatechange = port_query_info_done;
+        xmlHTTP_port.send( info );
+    }
+    
+    
+    search_button_on_click(  )
+	
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</html>

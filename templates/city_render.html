@@ -1,0 +1,829 @@
+$def with( global_info)
+
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>城市查询统计</title>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=hx4PhPbwWzbPG4risisqwaIU"></script>
+    <script src="/static/js/jquery.min.js"></script>    
+    <script src="/static/js/highstock.js"></script>
+    <script src="/static/js/exporting.js"></script> 
+    <script src="/static/js/jquery.min.map"></script>   
+    <script src="/static/jquery-ui-1.10.3/ui/jquery.ui.core.js"></script>
+    <script src="/static/jquery-ui-1.10.3/ui/jquery.ui.widget.js"></script>
+    <script src="/static/jquery-ui-1.10.3/ui/jquery.ui.datepicker.js"></script>
+    <link rel="stylesheet" href="/static/jquery-ui-1.10.3/themes/base/jquery.ui.all.css">
+    <link rel="stylesheet" href="/static/jquery-ui-1.10.3/demos/demos.css">
+    <style type="text/css">
+        html,body
+        {
+            height: 100%;
+            margin: 0;
+            
+        }
+        .left
+        {
+            float: left;
+            height: 6000px;
+            width: 200px;
+            background:#88ee88;
+            border: 5px solid #88ee88 ;
+        }
+        .right
+        {
+            margin-left:210px; 
+            height: 6000px;
+            width: 1100px;
+            background:#eeffee;
+            border: 3px solid #80e080 ;
+        }  
+        .divtool
+        {
+            width: 100%;
+            height: 100px;
+            box-shadow: 0 0 1px #0f0f0f;
+        }
+        .divcomment
+        {
+            width: 100%;
+            height: 5900px ;
+            background:#ffffee ;
+        }
+        .divtoolname
+        {
+            width: 100%;
+            height: 35%;
+            text-align:center;
+            background:#ccffdd;
+            box-shadow: 0 0 3px #0f0f0f;
+        }
+        .divtooltools
+        {
+            width: 100%;
+            height: 63%;
+            box-shadow: 0 0 3px #0f0f0f;
+        }
+        .buttonLeft
+        {
+            width:80%;
+            height:30px;
+            box-shadow: 0 0 1px #0f0f0f;
+        }
+    </style>
+</head>
+<body>
+    <form id="log_form" method="POST">
+        <div class="left" id="div_left">
+            <div style="width:100%;height:130px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >概览信息</a>
+                    </div>
+                    <p><input type="button" value="导航统计概览" class="buttonLeft" onclick="button_jump_click('top_all')"></p>
+                    <p><input type="button" value="导航关键统计报表" class="buttonLeft" onclick="button_jump_click('kes_stat')"></p>
+                </center>
+            </div>
+            </br>
+            <div style="width:100%;height:150px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >日志信息查询</a>
+                    </div>
+                    <p><input type="button" value="错误日志查询" class="buttonLeft" onclick="button_jump_click('error_log')"></p>
+                    <p><input type="button" value="cuid查询" class="buttonLeft" onclick="button_jump_click('cuid_log')" ></p>
+                </center>
+            </div>
+            </br>
+            <div style="width:100%;height:300px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >端信息查询</a>
+                    </div>
+                    <p><input type="button" value="端pv统计"  class="buttonLeft"  onclick="button_jump_click('port_pv')" ></p>
+                    <p><input type="button" value="端错误率统计"  class="buttonLeft"  onclick="button_jump_click('port_error')" ></p>
+                    <p><input type="button" value="端非法率统计"  class="buttonLeft"  onclick="button_jump_click('port_illegal')" ></p>
+                    <p><input type="button" value="端数据量统计"  class="buttonLeft"  onclick="button_jump_click('port_data')" ></p>
+                    <p><input type="button" value="端性能统计"  class="buttonLeft"  onclick="button_jump_click('port_performance')" ></p>
+                    <p><input type="button" value="偏航统计" class="buttonLeft" onclick="button_jump_click('yawpos_summary')" ></p>
+                </center>
+            </div>
+            </br>
+            <div style="width:100%;height:300px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >version信息查询</a>
+                    </div>
+                    <p><input type="button" value="version-pv统计"  class="buttonLeft" onclick="button_jump_click('version_pv')" ></p>
+                    <p><input type="button" value="version错误率统计"  class="buttonLeft" onclick="button_jump_click('version_error')" ></p>
+                    <p><input type="button" value="version非法率统计"  class="buttonLeft" onclick="button_jump_click('version_illegal')" ></p>
+                    <p><input type="button" value="version数据量统计" class="buttonLeft"  onclick="button_jump_click('version_data')" ></p>
+                    <p><input type="button" value="version性能统计" class="buttonLeft" onclick="button_jump_click('version_performance')" ></p>
+                    <p><input type="button" value="模块性能统计" class="buttonLeft" onclick="button_jump_click('module_performance')" ></p>
+                </center>
+            </div>
+            </br>
+            <div style="width:100%;height:120px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >用户反馈信息查询</a>
+                    </div>
+                    <p><input type="button" value="用户吐槽类型统计"  class="buttonLeft" onclick="button_jump_click('naviure_type_flag')" ></p>
+                </center>
+            </div>
+            </br>
+            <div style="width:100%;height:300px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >其他信息查询</a>
+                    </div>
+                    <p><input type="button" value="multinavi session 统计" class="buttonLeft" onclick="button_jump_click('multinavi_session_query')" ></p>
+                    <p><input type="button" value="特殊路线pv统计" class="buttonLeft" onclick="button_jump_click('special_route_type_pv')" ></p>
+                    <p><input type="button" value="城市query统计" class="buttonLeft" onclick="button_jump_click('city_query')" ></p>
+                    <p><input type="button" value="多路线召回信息统计" class="buttonLeft" onclick="button_jump_click('multi_route_recall')" ></p>
+                    <p><input type="button" value="导航偏好信息统计" class="buttonLeft" onclick="button_jump_click('navigation_preference')" ></p>
+                    <p><input type="button" value="时间评估统计" class="buttonLeft" onclick="button_jump_click('route_time_ratio')" ></p>
+                </center>
+            </div>
+        </div>
+		<div class="right" id="div_right">
+			<div class="divtool">
+				<div class="divtoolname">
+					<a style="font-size:20px">城市查询统计</a>
+					
+				</div>
+				<div class="divtooltools">
+					<div style="margin-left:2px;float:left;width:250px;height:98%;background:#bcdeff;box-shadow: 0 0 1px #000;">
+						<center>
+							<div style="width:100%;height:22px;background:#abcdef;">
+								<a style="font-size:20px;" >时间选择 </a>
+							</div>
+							<div style="width:100%;height:5px;"></div>
+							From: <input type="text" id="datepicker_from" name="datepicker_from" style="width:80px">
+							To: <input type="text" id="datepicker_to" name="datepicker_to" style="width:80px">
+						</center>
+					</div>
+                    <div style="margin-left:3px;float:left;width:220px;height:98%;background:#bcdeff;box-shadow: 0 0 1px #000;">
+						<center>
+							<div style="width:100%;height:22px;background:#abcdef;">
+								<a style="font-size:20px;" >端口选择 </a>
+							</div>
+							<div style="width:100%;height:5px;"></div>
+                            <select name="port_name_select" id="port_name_select"></select>
+                        </center>
+					</div>
+					<div style="margin-left:3px;float:left;width:250px;height:98%;background:#bcdeff;box-shadow: 0 0 1px #000;">
+						<center>
+							<div style="width:100%;height:22px;background:#abcdef;">
+								<a style="font-size:20px;" >查询操作 </a>
+							</div>
+							<div style="width:100%;height:5px;"></div>
+							<input type="button" value="按天查询"  name="Button_Search_Day" id="Button_Search_Day" style="width:100px;height:25px;box-shadow: 0 0 1px #0f0f0f;" onclick="button_search_click('DAY')" >
+							<input type="button" value="按周查询"  name="Button_Search_Week" id="Button_Search_Week" style="width:100px;height:25px;box-shadow: 0 0 1px #0f0f0f;" onclick="button_search_click('WEEK')" >
+						</center>
+					</div>
+				</div>
+			</div>
+			<div class="divcomment">	
+					<div style="width:100%;height:1200px">
+						<div style="float:left;height:100%;width:20%;background:#ffeeff">
+							<center>
+								<div style="height:10px;width:100%;"></div>
+								<input type="button" value="清空图表" style="width:100px;height:25px;box-shadow: 0 0 1px #0f0f0f;" onclick="table_clear_click()" >
+								<div style="height:10px;width:100%;"></div>
+								<table id="city_name_table" border=1></table>
+                            </center>
+						</div>
+						<div style="float:right;height:25%;width:80%;background:#0ff">
+							<div id="div_hour_num" style="float:left;height:99%;width:49.9%;background:#aaaa00;box-shadow: 0 0 1px #0f0f0f;">
+							
+							</div>
+							<div id="div_hour_ratio" style="float:right;height:99%;width:49.9%;background:#0aaaa0;box-shadow: 0 0 1px #0f0f0f;">
+							
+							</div>
+						</div>
+						
+						<div style="float:right;height:25%;width:80%;background:#ff0">
+							<div id="div_day_num" style="float:left;height:99%;width:49.9%;background:#00aaaa;box-shadow: 0 0 1px #0f0f0f;">
+							
+							</div>
+							<div id="div_day_ratio" style="float:right;height:99%;width:49.9%;background:#a00aaa;box-shadow: 0 0 1px #0f0f0f;">
+							
+							</div>
+						</div>
+						
+						<div style="float:right;height:25%;width:80%;background:#f0f">
+							<div id="div_week_num" style="float:left;height:99%;width:49.9%;background:#aa00aa;box-shadow: 0 0 1px #0f0f0f;">
+							
+							</div>
+							<div id="div_week_ratio" style="float:right;height:99%;width:49.9%;background:#aaa00a;box-shadow: 0 0 1px #0f0f0f;">
+							
+							</div>
+						</div>
+						
+						<div id="container_vec" style="float:right;height:25%;width:80%;background:#0ff">
+						</div>
+						
+					</div>
+				<center>
+					<div style="width:100%;height:30px;background:#ccc;">
+						<a style="font-size:20px">城市选择：</a>
+						<select name="city_name" id="city_name">
+						</select>
+						<input type="button" value="城市高频查询" onclick="button_city_pp_click()" >
+					</div>
+					
+					<div  id="city_hf_table_div" style="width:100%">
+						<table id="city_hf_table" border="1" style="word-break:break-all; word-wrap:break-all;">
+							<tr>
+								<th width="300">起点</th>
+								<th width="300">终点</th>
+								<th width="100">频数</th>
+								<th width="200">线条颜色</th>
+							</tr>
+						</table>
+					</div>
+					<div style="width:100%;">
+						<input type="button" value="前一页" onclick="button_city_pre_click()" >
+						<input type="button" value="下一页" onclick="button_city_next_click()" >
+					</div>
+					<div  id="city_hf_map_div" style="width:95%;height:800px">
+					</div>
+					<br>
+					<div  id="container_sum_radio" style="width:700px;height:500px"></div>
+					<br>
+				</center>
+				</br>
+				
+			</div>
+		</div>
+	</form>
+</body>
+
+<script type="text/javascript">
+	JQ = jQuery.noConflict();
+	
+	var host_port	= $:global_info ;
+	var host		= "http://" + host_port[0] ;
+	var port_num	= host_port[1] ;
+	function button_jump_click( target_page ){
+		var url = host + ":" + port_num + "/" + target_page;
+		window.open( url , "_self");
+	}
+
+	JQ(function() {
+		JQ( "#datepicker_from" ).datepicker();
+	});
+	
+	JQ(function() {
+		JQ( "#datepicker_to" ).datepicker();
+	});
+    
+	var data_vector		= [] ;
+	var data_div_list	= [] ;
+	var hour_range		= [] ;
+	var day_range		= [] ;
+	var week_range		= [] ;
+	var name_list		= [] ;
+	var hour_data_list	= [] ;
+	var day_data_list	= [] ;
+	var week_data_list	= [] ;
+	var hour_ratio_list	= [] ;
+	var day_ratio_list	= [] ;
+	var week_ratio_list	= [] ;
+    var visible_lst = [];
+    var data_dict = {};
+	var vec_show	= [];
+    var search_model = "DAY";
+	var port_name_2_port_name_show = {};
+    port_name_2_port_name_show[ "all_port" ] = "全部";
+    port_name_2_port_name_show[ "webmap" ] = "webmap";
+    port_name_2_port_name_show[ "webapp" ] = "webapp";
+    port_name_2_port_name_show[ "webapi" ] = "webapi";
+    port_name_2_port_name_show[ "unknown" ] = "来源未知";
+    port_name_2_port_name_show[ "baidu_map" ] = "百度地图";
+    port_name_2_port_name_show[ "baidu_navi" ] = "百度导航";
+    port_name_2_port_name_show[ "navi_sdk" ] = "导航SDK";
+    port_name_2_port_name_show[ "other_service" ] = "其他后端服务";
+    port_name_2_port_name_show[ "remove_port" ] = "resid不存在";
+	
+    var port_inner_html = "";
+    for( var port_name in port_name_2_port_name_show ){
+        port_inner_html = port_inner_html + "<option value=" + port_name + ">" + port_name_2_port_name_show[port_name] + "</option>"
+    }
+    document.getElementById("port_name_select").innerHTML = port_inner_html;
+    
+	function createStockChart( div_id , title , ytitle , decimals , suffix , ysuffix , mydata , need_point ){
+		JQ('#' + div_id ).highcharts
+		(
+			{
+				chart: {
+					type: 'spline'
+				},
+				credits: {
+					enabled: false
+				},
+				title: {
+					text: title
+				},
+				xAxis: {
+					type: 'datetime'
+				},
+				yAxis: {
+					title: {
+						text: ytitle
+					},
+					labels: {
+						formatter: function() {
+							return this.value + ysuffix
+						}
+					}
+                },
+				legend: { 
+					enabled: false 
+				},
+				tooltip: {
+					crosshairs: true,
+					shared: true,
+					useHTML : true,
+					headerFormat : '<small>{point.key}</small><table>',
+					pointFormat : '<tr><td style="color:{series.color}">{series.name}:</td>' + '<td style="text-align:right"><b>{point.y}</b></td></tr>',
+					footerFormat: '</table>',
+					valueDecimals : decimals,
+					valueSuffix: suffix
+				},
+				plotOptions: {
+					series: {
+						marker: {
+							enabled: need_point
+						}
+					}
+				},
+				navigator: {
+					margin: 2,
+					height: 20
+				},
+				rangeSelector: {
+					enabled: false
+				},
+				series: mydata
+			}
+		);
+	}
+	
+	function draw_hour_table(){
+		var start_time 	= parseInt( hour_range[0] ) * 3600 * 1000;
+		var mydata=[];
+		for( var i = 0 ; i < name_list.length ; i++ ){
+			if( visible_lst[i] == true ){
+				mydata.push(
+					{
+						name : name_list[i],
+						pointInterval: 3600 * 1000,
+						pointStart: start_time ,
+						data: hour_data_list[i]
+					}
+				);
+			}
+		}
+		createStockChart( "div_hour_num" , "城市query统计（小时）" , "请求数目" , 0 , '' , '' , mydata ,false );
+		
+		mydata=[];
+		for( var i = 0 ; i < name_list.length ; i++ ){
+			if( visible_lst[i] == true ){
+				mydata.push(
+					{
+						name : name_list[i],
+						pointInterval: 3600 * 1000,
+						pointStart: start_time ,
+						data: hour_ratio_list[i]
+					}
+				);
+			}
+		}
+		createStockChart( "div_hour_ratio" , "城市query比例统计（小时）" , "请求比例" , 2 , '%' , '%' , mydata ,false );
+	}
+	
+	function draw_day_table(){
+		var start_time 	= parseInt( day_range[0] ) * 3600 * 1000;
+		var mydata=[];
+		for( var i = 0 ; i < name_list.length ; i++ ){
+			if( visible_lst[i] == true ){
+				mydata.push(
+					{
+						name : name_list[i],
+						pointInterval: 24 * 3600 * 1000,
+						pointStart: start_time ,
+						data: day_data_list[i]
+					}
+				);
+			}
+		}
+		createStockChart( "div_day_num" , "城市query统计（天）" , "请求数目" , 0 , '' , '' , mydata , true );
+		
+		mydata=[];
+		for( var i = 0 ; i < name_list.length ; i++ ){
+			if( visible_lst[i] == true ){
+				mydata.push(
+					{
+						name : name_list[i],
+						pointInterval: 24 * 3600 * 1000,
+						pointStart: start_time ,
+						data: day_ratio_list[i]
+					}
+				);
+			}
+		}
+		createStockChart( "div_day_ratio" , "城市query比例统计（天）" , "请求比例" , 2 , '%' , '%' , mydata , true );
+	}
+	
+	function draw_week_table(){
+		var start_time 	= parseInt( week_range[0] ) * 3600 * 1000;
+		var mydata=[];
+		for( var i = 0 ; i < name_list.length ; i++ ){
+			if( visible_lst[i] == true ){
+				mydata.push(
+					{
+						name : name_list[i],
+						pointInterval: 7 * 24 * 3600 * 1000,
+						pointStart: start_time ,
+						data: week_data_list[i]
+					}
+				);
+			}
+		}
+		createStockChart( "div_week_num" , "城市query统计（周）" , "请求数目" , 0 , '' , '' , mydata ,true );
+		
+		mydata=[];
+		for( var i = 0 ; i < name_list.length ; i++ ){
+			if( visible_lst[i] == true ){
+				mydata.push(
+					{
+						name : name_list[i],
+						pointInterval: 7 * 24 * 3600 * 1000,
+						pointStart: start_time ,
+						data: week_ratio_list[i]
+					}
+				);
+			}
+		}
+		createStockChart( "div_week_ratio" , "城市query比例统计（周）" , "请求比例" , 2 , '%' , '%' , mydata ,true );
+	}
+	
+	function draw_tables(){
+		draw_hour_table();
+		draw_day_table();
+		draw_week_table();
+        var mydata = [];
+        for( var i = 0 ; i < name_list.length ; i++ ){
+			if( visible_lst[i] == true ){
+				mydata.push(
+					{
+						name : name_list[i],
+						data : data_div_list[i]
+					}
+				);
+			}
+		}
+        JQ('#container_vec').highcharts({
+			chart: {
+				type: 'column'
+			},
+			title: {
+				text: '城市距离分布统计'
+			},
+			xAxis: {
+				categories: vec_show ,
+				title: {
+					text: '距离分布'
+				}
+			},
+			yAxis: {
+				min: 0,
+				title: {
+					text: '数量'
+				},
+				labels: {
+					formatter: function() {
+						return this.value +'%'
+					}
+				}
+			},
+			legend: { 
+				enabled: false 
+			},
+			credits: { 
+				enabled: false 
+			},
+			tooltip: {
+				crosshairs: true,
+				shared: true,
+				useHTML : true,
+				headerFormat : '<small>{point.key}</small><table>',
+				pointFormat : '<tr><td style="color:{series.color}">{series.name}:</td>' + '<td style="text-align:right"><b>{point.y}</b></td></tr>',
+				footerFormat: '</table>',
+				valueDecimals : 2,
+				valueSuffix: '%'
+				
+			},
+			series: mydata
+		});
+	}
+	
+	
+	function table_clear_click( ){
+		for( var i = 0 ; i < name_list.length ; i++ ){
+			visible_lst[i] = false;
+			city_id = "city_" + name_list[i];
+			var td_obj =  document.getElementById( city_id );
+			td_obj.style.backgroundColor = "#ffffee";
+		}
+		draw_tables();
+	}
+	
+	function table_on_click( td_id ){
+		var td_obj =  document.getElementById( td_id );
+		city_name = td_id.split( '_' )[1];
+		for( var i = 0 ; i < name_list.length ; i++ ){
+			if( name_list[i] == city_name ){
+				if( visible_lst[ i ] == true ){
+					visible_lst[i] = false;
+					td_obj.style.backgroundColor = "#ffffee";
+				}else{
+					visible_lst[i] = true;
+					td_obj.style.backgroundColor = "#889988";
+				}
+			}
+		}
+		draw_tables();
+	}
+	
+    
+    function init_data(){
+        data_vector		= data_dict["data_vector"] ;
+        data_div_list	= data_dict["data_div_list"] ;
+        hour_range		= data_dict["hour_range"] ;
+        day_range		= data_dict["day_range"] ;
+        week_range		= data_dict["week_range"] ;
+        name_list		= data_dict["name_list"] ;
+        hour_data_list	= data_dict["hour_list"] ;
+        day_data_list	= data_dict["day_list"] ;
+        week_data_list	= data_dict["week_list"] ;
+        hour_ratio_list	= data_dict["hour_ratio_list"] ;
+        day_ratio_list	= data_dict["day_ratio_list"] ;
+        week_ratio_list	= data_dict["week_ratio_list"] ;
+        search_model    = data_dict["search_model"] ;
+        visible_lst = [];
+        data_dict = {};
+        vec_show	= [];
+        
+        var inner_html = "";
+        if( search_model == "DAY" ){
+            inner_html = inner_html + 
+                "<tr>" +
+                    "<th>城市名称</th>" +
+					"<th>最后一天查询比例</th>" +
+				"</tr>";
+        }else{
+            inner_html = inner_html + 
+                "<tr>" +
+                    "<th>城市名称</th>" +
+					"<th>最后一周查询比例</th>" +
+				"</tr>";
+        }
+        for( var i = 0 ; i < name_list.length ; i++ ){
+            var last_ratio_data = day_ratio_list[i][ day_data_list[i].length - 1 ];
+            if( search_model == "WEEK" ){
+                last_ratio_data = week_ratio_list[i][ week_data_list[i].length - 1 ];
+            }
+            inner_html = inner_html + 
+                "<tr>" +
+                    "<td  onclick='table_on_click( this.id )' id='city_" + name_list[i] + "' >" + name_list[i] + "</td>" +
+                    "<td >" + last_ratio_data +" %</td>" +
+                "</tr>";
+        }
+        document.getElementById("city_name_table").innerHTML = inner_html;
+        
+        for( var  i  = 0 ; i < name_list.length ; i ++ ){
+            visible_lst.push( false );
+        }
+        visible_lst[0] = true;
+        document.getElementById( "city_" + name_list[0] ).style.backgroundColor = "#889988";
+        
+        vec_show.push( "[0," + parseInt( data_vector[0] )/1000+ ")" );
+        for( var i = 0 ; i < data_vector.length ; i++ ){
+            if( i < data_vector.length - 1 )
+                vec_show.push( "[" + parseInt( data_vector[i] )/1000 + "," +  parseInt( data_vector[ i+1 ] )/1000 + ")" );
+            else
+                vec_show.push( "[" + parseInt( data_vector[i] )/1000 + ",--)" );
+        }
+     
+        inner_html = ""
+        for( var i = 0 ; i < name_list.length ; i++ ){
+            inner_html = inner_html + "<option value=" + name_list[i] + ">" + name_list[i] + "</option>"
+        }
+        document.getElementById("city_name").innerHTML = inner_html;
+        
+    }
+    
+    var xmlHTTP_pv = new XMLHttpRequest();
+    function query_info_done(){
+        if( xmlHTTP_pv.readyState == 4 && xmlHTTP_pv.status == 200){
+            json_obj = eval('(' + xmlHTTP_pv.responseText + ')');
+            document.getElementById("datepicker_from").value = json_obj['date_from'];
+            document.getElementById("datepicker_to").value   = json_obj['date_to'];
+            data_dict = json_obj;
+            data_len  = data_dict['data_len'];
+            if( data_len <= 0 ){
+                alert( "该查询日期内无数据");
+                exit(0) ;
+            }
+            init_data( );
+            draw_tables();
+            button_city_pp_click();
+        }
+    }
+    
+	function button_search_click( str_value ){
+        var url = host + ":" + port_num + "/city_query_get_data";
+        var port_name = document.getElementById("port_name_select").value;
+        var info = "";
+        info = info + "date_from=" + document.getElementById("datepicker_from").value ;
+        info = info + "&date_to=" + document.getElementById("datepicker_to").value ;
+        info = info + "&search_model=" + str_value;
+        info = info + "&port_name=" + port_name;
+        xmlHTTP_pv.open("POST", url, true);
+        xmlHTTP_pv.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+        xmlHTTP_pv.onreadystatechange = query_info_done;
+        xmlHTTP_pv.send( info );
+	}
+    
+    
+    
+    
+    
+    
+    
+    
+	/*
+
+	function draw_sn_en( sn ,en ){
+		sp = new BMap.Point( sn[0] , sn[1] );
+		ep = new BMap.Point( en[0] , en[1] );
+		sm = new BMap.Marker( sp );
+		em = new BMap.Marker( ep );
+		map.addOverlay( sm );
+		map.addOverlay( em );  
+		map.centerAndZoom( sp , 15 );
+		var sinfo = new BMap.InfoWindow("<p>起点:</p><p>" + sn + "</p>");
+		var einfo = new BMap.InfoWindow("<p>终点:</p><p>" + en + "</p>");
+		sm.addEventListener( "click" , function(){ this.openInfoWindow( sinfo ); } );
+		em.addEventListener( "click" , function(){ this.openInfoWindow( einfo ); } );
+	}
+	
+	*/
+	
+	var xmlHTTP = new XMLHttpRequest();
+	var map = new BMap.Map("city_hf_map_div");
+	map.centerAndZoom(new BMap.Point(116.390740,39.837835), 15);
+	map.enableScrollWheelZoom();
+	var city_name_select = document.getElementById("city_name");
+	var city_hf_list	= [];
+	var hf_list_idx_s	= -1;
+	var color_list 		= [ "#000" ,  "#00f" , "#080" , "#088" , "#08f" , "#0f0" , "#0f8" , "#0ff" , "#800" , "#808" , "#80f" , "#f08" ];
+	
+	//[start_idx , end_idx )
+	function draw_hf_line( start_idx , end_idx ){
+		map.clearOverlays();
+		if( start_idx == end_idx ) return 1;
+		var midx = 0.0;
+		var midy = 0.0;
+		for( var i = start_idx ; i < end_idx ; i ++ ) {
+			//alert( city_hf_list[i] );
+			var point_array = new Array();
+			point_array.push( new BMap.Point( city_hf_list[i][0] , city_hf_list[i][1] ) );
+			point_array.push( new BMap.Point( city_hf_list[i][2] , city_hf_list[i][3] ) );
+			midx = midx + parseFloat( city_hf_list[i][0] ) + parseFloat( city_hf_list[i][2] );
+			midy = midy + parseFloat( city_hf_list[i][1] ) + parseFloat( city_hf_list[i][3] );
+			var polyline = new BMap.Polyline( point_array , { strokeColor : color_list[ i - start_idx ], strokeWeight:6 } );
+			map.addOverlay( polyline );
+
+			sm = new BMap.Marker( point_array[0] );
+			map.addOverlay( sm );
+		}
+		midx = midx / ( 2 * ( end_idx - start_idx ) ) ;
+		midy = midy / ( 2 * ( end_idx - start_idx ) ) ;
+		
+		map.centerAndZoom( new BMap.Point( midx , midy ) , 15 );
+		return 0;
+	}
+	
+	function draw_hf_table( start_idx , end_idx ){
+		var tb 		 = document.getElementById("city_hf_table");
+		try
+		{
+			for( var  i = 0 ; i < 10 ; i ++ ) tb.deleteRow( 1 );
+		}
+		catch(err)
+		{
+		//	alert( err );
+		}
+		var sss = "";
+		for( var i = start_idx ; i < end_idx ; i ++ ) {
+			var newRow 	= document.createElement("tr");   
+			
+			var cell_s	= document.createElement("td");
+			cell_s.innerHTML = "(" + city_hf_list[i][0] + " , " + city_hf_list[i][1] + " )";
+			cell_s.setAttribute("align","center");
+			
+			var cell_e	= document.createElement("td");
+			cell_e.innerHTML = "(" + city_hf_list[i][2] + " , " + city_hf_list[i][3] + " )";
+			cell_e.setAttribute("align","center");
+			
+			var cell_n	= document.createElement("td");
+			cell_n.innerHTML = "" + city_hf_list[i][4];
+			cell_n.setAttribute("align","right");
+			
+			var cell_l	= document.createElement("td");
+			cell_l.innerHTML = " <hr width=50px size=5 color=" + color_list[ i - start_idx ] + "></hr>";
+			cell_l.setAttribute("align","center");
+			
+			newRow.appendChild( cell_s );
+			newRow.appendChild( cell_e );
+			newRow.appendChild( cell_n );
+			newRow.appendChild( cell_l );
+			
+			tb.appendChild( newRow );
+			
+		}
+		
+	}
+    
+	function show_city_hf(){
+		if( hf_list_idx_s == -1 ) return 1;
+		if( hf_list_idx_s > city_hf_list.length ) hf_list_idx_s = 0;
+		hf_list_idx_e = hf_list_idx_s + 10;
+		if( hf_list_idx_e > city_hf_list.length ) hf_list_idx_e = city_hf_list.length;
+		draw_hf_table( hf_list_idx_s , hf_list_idx_e );
+		draw_hf_line( hf_list_idx_s , hf_list_idx_e );
+		return 0;
+	}
+	
+	
+	function button_city_next_click(){
+		if( hf_list_idx_s == -1 ) return 1;
+		hf_list_idx_s = hf_list_idx_s + 10;
+		show_city_hf();
+		return 0;
+	}
+	
+	function button_city_pre_click(){
+		if( hf_list_idx_s == -1 ) return 1;
+		hf_list_idx_s = hf_list_idx_s - 10;
+		if( hf_list_idx_s < 0 ) hf_list_idx_s = 0;
+		show_city_hf();
+		return 0;
+	}
+    
+	function city_pp_done(){
+		//alert( xmlHTTP.readyState + "," + xmlHTTP.status );
+		if(xmlHTTP.readyState == 4 && xmlHTTP.status == 200)
+		{
+			//TODO
+			//alert(  xmlHTTP.responseText  );
+			jsonObj = eval('(' + xmlHTTP.responseText + ')');
+			//alert( "done" );
+			city_hf_list = jsonObj["city_hf"];
+			hf_list_idx_s = 0;
+			if( city_hf_list.length <= 0 ) hf_list_idx_s = -1;
+			show_city_hf();
+		}
+	}
+	
+	
+	function button_city_pp_click(){
+		var city_name = document.getElementById("city_name").value;
+		if( city_name == "" ) {
+			alert( "请选择城市" );
+			return 1;
+		}
+		
+		pp_url = host + ":" + port_num + "/" + "city_hf";
+		//alert( pp_url );
+		xmlHTTP.open( "POST", pp_url , true );
+		xmlHTTP.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		xmlHTTP.onreadystatechange = city_pp_done;
+		
+		var date_from 	= document.getElementById("datepicker_from").value;
+		var date_to 	= document.getElementById("datepicker_to").value;
+		xmlHTTP.send( 'date_from=' + date_from + '&' + 'date_to=' + date_to + '&city=' + city_name );
+		return 0;
+	}
+
+    
+    
+    button_search_click("DAY");
+	
+</script>
+
+
+</html>

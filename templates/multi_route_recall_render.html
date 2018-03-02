@@ -1,0 +1,667 @@
+$def with( global_info)
+
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>多路线召回信息统计</title>
+    
+    <script src="/static/js/jquery.min.js"></script>    
+    <script src="/static/js/highstock.js"></script>
+    <script src="/static/js/exporting.js"></script> 
+    <script src="/static/js/jquery.min.map"></script>   
+    <script src="/static/jquery-ui-1.10.3/ui/jquery.ui.core.js"></script>
+    <script src="/static/jquery-ui-1.10.3/ui/jquery.ui.widget.js"></script>
+    <script src="/static/jquery-ui-1.10.3/ui/jquery.ui.datepicker.js"></script>
+    <link rel="stylesheet" href="/static/jquery-ui-1.10.3/themes/base/jquery.ui.all.css">
+    <link rel="stylesheet" href="/static/jquery-ui-1.10.3/demos/demos.css">
+    <style type="text/css">
+        html,body
+        {
+            height: 100%;
+            margin: 0;
+            
+        }
+        .left
+        {
+            float: left;
+            height: 6000px;
+            width: 200px;
+            background:#88ee88;
+            border: 5px solid #88ee88 ;
+        }
+        .right
+        {
+            margin-left:210px; 
+            height: 6000px;
+            width: 1100px;
+            background:#eeffee;
+            border: 3px solid #80e080 ;
+        }  
+        .divtool
+        {
+            width: 100%;
+            height: 100px;
+            box-shadow: 0 0 1px #0f0f0f;
+        }
+        .divcomment
+        {
+            width: 100%;
+            height: 5900px ;
+            background:#ffffee ;
+        }
+        .divtoolname
+        {
+            width: 100%;
+            height: 35%;
+            text-align:center;
+            background:#ccffdd;
+            box-shadow: 0 0 3px #0f0f0f;
+        }
+        .divtooltools
+        {
+            width: 100%;
+            height: 63%;
+            box-shadow: 0 0 3px #0f0f0f;
+        }
+        .buttonLeft
+        {
+            width:80%;
+            height:30px;
+            box-shadow: 0 0 1px #0f0f0f;
+        }
+    </style>
+</head>
+<body>
+    <form id="log_form" method="POST">
+        <div class="left" id="div_left">
+            <div style="width:100%;height:130px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >概览信息</a>
+                    </div>
+                    <p><input type="button" value="导航统计概览" class="buttonLeft" onclick="button_jump_click('top_all')"></p>
+                    <p><input type="button" value="导航关键统计报表" class="buttonLeft" onclick="button_jump_click('kes_stat')"></p>
+                </center>
+            </div>
+            </br>
+            <div style="width:100%;height:150px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >日志信息查询</a>
+                    </div>
+                    <p><input type="button" value="错误日志查询" class="buttonLeft" onclick="button_jump_click('error_log')"></p>
+                    <p><input type="button" value="cuid查询" class="buttonLeft" onclick="button_jump_click('cuid_log')" ></p>
+                </center>
+            </div>
+            </br>
+            <div style="width:100%;height:300px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >端信息查询</a>
+                    </div>
+                    <p><input type="button" value="端pv统计"  class="buttonLeft"  onclick="button_jump_click('port_pv')" ></p>
+                    <p><input type="button" value="端错误率统计"  class="buttonLeft"  onclick="button_jump_click('port_error')" ></p>
+                    <p><input type="button" value="端非法率统计"  class="buttonLeft"  onclick="button_jump_click('port_illegal')" ></p>
+                    <p><input type="button" value="端数据量统计"  class="buttonLeft"  onclick="button_jump_click('port_data')" ></p>
+                    <p><input type="button" value="端性能统计"  class="buttonLeft"  onclick="button_jump_click('port_performance')" ></p>
+                    <p><input type="button" value="偏航统计" class="buttonLeft" onclick="button_jump_click('yawpos_summary')" ></p>
+                </center>
+            </div>
+            </br>
+            <div style="width:100%;height:300px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >version信息查询</a>
+                    </div>
+                    <p><input type="button" value="version-pv统计"  class="buttonLeft" onclick="button_jump_click('version_pv')" ></p>
+                    <p><input type="button" value="version错误率统计"  class="buttonLeft" onclick="button_jump_click('version_error')" ></p>
+                    <p><input type="button" value="version非法率统计"  class="buttonLeft" onclick="button_jump_click('version_illegal')" ></p>
+                    <p><input type="button" value="version数据量统计" class="buttonLeft"  onclick="button_jump_click('version_data')" ></p>
+                    <p><input type="button" value="version性能统计" class="buttonLeft" onclick="button_jump_click('version_performance')" ></p>
+                    <p><input type="button" value="模块性能统计" class="buttonLeft" onclick="button_jump_click('module_performance')" ></p>
+                </center>
+            </div>
+            </br>
+            <div style="width:100%;height:120px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >用户反馈信息查询</a>
+                    </div>
+                    <p><input type="button" value="用户吐槽类型统计"  class="buttonLeft" onclick="button_jump_click('naviure_type_flag')" ></p>
+                </center>
+            </div>
+            </br>
+            <div style="width:100%;height:300px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >其他信息查询</a>
+                    </div>
+                    <p><input type="button" value="multinavi session 统计" class="buttonLeft" onclick="button_jump_click('multinavi_session_query')" ></p>
+                    <p><input type="button" value="特殊路线pv统计" class="buttonLeft" onclick="button_jump_click('special_route_type_pv')" ></p>
+                    <p><input type="button" value="城市query统计" class="buttonLeft" onclick="button_jump_click('city_query')" ></p>
+                    <p><input type="button" value="多路线召回信息统计" class="buttonLeft" onclick="button_jump_click('multi_route_recall')" ></p>
+                    <p><input type="button" value="导航偏好信息统计" class="buttonLeft" onclick="button_jump_click('navigation_preference')" ></p>
+                    <p><input type="button" value="时间评估统计" class="buttonLeft" onclick="button_jump_click('route_time_ratio')" ></p>
+                </center>
+            </div>
+        </div>
+        <div class="right" id="div_right">
+            <div class="divtool">
+                <div class="divtoolname">
+                    <a style="font-size:20px">多路线召回信息统计</a>
+                    
+                </div>
+                <div class="divtooltools">
+                    <div style="margin-left:2px;float:left;width:250px;height:98%;background:#bcdeff;box-shadow: 0 0 1px #000;">
+                        <center>
+                            <div style="width:100%;height:22px;background:#abcdef;">
+                                <a style="font-size:20px;" >时间选择 </a>
+                            </div>
+                            <div style="width:100%;height:5px;"></div>
+                            From: <input type="text" id="datepicker_from" name="datepicker_from" style="width:80px" >
+                            To: <input type="text" id="datepicker_to" name="datepicker_to" style="width:80px" >
+                        </center>
+                    </div>
+                    <div style="margin-left:3px;float:left;width:120px;height:98%;background:#bcdeff;box-shadow: 0 0 1px #000;">
+                        <center>
+                            <div style="width:100%;height:22px;background:#abcdef;">
+                                <a style="font-size:20px;" >查询操作 </a>
+                            </div>
+                            <div style="width:100%;height:5px;"></div>
+                            <input type="button" value="查询"  name="Button_Search" id="Button_Search" onclick="search_button_on_click()" style="width:100px;height:25px;box-shadow: 0 0 1px #0f0f0f;" >
+                        </center>
+                    </div>
+                    <div style="margin-left:3px;float:left;width:360px;height:98%;background:#bcdeff;box-shadow: 0 0 1px #000;">
+						<center>
+							<div style="width:100%;height:22px;background:#abcdef;">
+								<a style="font-size:20px;" >展示选项 </a>
+							</div>
+							<div style="width:100%;height:5px;"></div>
+							<input type="button" id="button_hour" name="button_hour" value="按小时展示" style="width:100px;height:25px;box-shadow: 0 0 1px #0f0f0f;" onclick="button_hour_click()" >
+							<input type="button" id="button_day" name="button_day" value="按天数展示" style="width:100px;height:25px;box-shadow: 0 0 1px #0f0f0f;" onclick="button_day_click()" >
+							<input type="button" id="button_week" name="button_week" value="按周展示" style="width:100px;height:25px;box-shadow: 0 0 1px #0f0f0f;" onclick="button_week_click()" >
+						</center>
+					</div>
+                </div>
+            </div>
+            <div class="divcomment">
+                <br/>
+                <center>
+                    <div id = "div_total_city" style="width:100%" >
+                        <div style='width:100%;height:40px;background:#cba'>
+                            <a style='font-size:28px;' >全国默认多路线信息统计</a>
+                        </div>
+                        <div style='width:100%;height:400px;background:#000'>
+                            <div id='div_total_city_1_client_get_num_pie' style='width:40%;height:400px;float:left;background:#800' ></div>
+                            <div id='div_total_city_1_client_get_num_stock' style='width:59.7%;height:400px;float:right;background:#a00' ></div>
+                        </div>
+                        <div id='div_total_city_1_re_src_num_column' style='width:100%;height:400px;background:#080'></div>
+                        
+                        <div style='width:100%;height:40px;background:#cba'>
+                            <a style='font-size:28px;' >全国躲避拥堵多路线信息统计</a>
+                        </div>
+                        <div style='width:100%;height:400px;background:#000'>
+                            <div id='div_total_city_16_client_get_num_pie' style='width:40%;height:400px;float:left;background:#800' ></div>
+                            <div id='div_total_city_16_client_get_num_stock' style='width:59.7%;height:400px;float:right;background:#a00' ></div>
+                        </div>
+                        <div id='div_total_city_16_re_src_num_column' style='width:100%;height:400px;background:#080'></div>
+                        
+                        <div style='width:100%;height:10px;'></div>
+                    </div>
+                    
+                    <div id = "div_key_citys" style="width:100%;" >
+                        <div style='width:100%;height:40px;background:#acb'>
+                            <a style='font-size:28px;' >重点城市信息统计</a>
+                        </div>
+                        <div style='width:100%;height:30px;background:#acb'>
+                            <div id='div_cur_city_name' style='width:30%;float:left;height:30px;background:#acb'></div>
+                            <div id='div_key_city_select' style='width:70%;float:left;height:30px;background:#acb;Text-align:right'>
+                                 <input type='button' value='北京' onclick='key_city_on_click( "beijing")' style='width:60px;height:25px;box-shadow: 0 0 1px #0f0f0f'></input>
+                                 <input type='button' value='上海' onclick='key_city_on_click( "shanghai")' style='width:60px;height:25px;box-shadow: 0 0 1px #0f0f0f'></input>
+                                 <input type='button' value='广州' onclick='key_city_on_click( "guangzhou")' style='width:60px;height:25px;box-shadow: 0 0 1px #0f0f0f'></input>
+                                 <input type='button' value='深圳' onclick='key_city_on_click( "shenzhen")' style='width:60px;height:25px;box-shadow: 0 0 1px #0f0f0f'></input>
+                            </div>
+                        </div>
+                        <div style='width:100%;height:32px;background:#cba'>
+                            <a style='font-size:28px;' >默认认多路线信息统计</a>
+                        </div>
+                        <div style='width:100%;height:400px;background:#000'>
+                            <div id='div_key_citys_1_client_get_num_pie' style='width:40%;height:400px;float:left;background:#800' ></div>
+                            <div id='div_key_citys_1_client_get_num_stock' style='width:59.7%;height:400px;float:right;background:#a00' ></div>
+                        </div>
+                        <div id='div_key_citys_1_re_src_num_column' style='width:100%;height:400px;background:#080'></div>
+                        
+                        <div style='width:100%;height:32px;background:#cba'>
+                            <a style='font-size:28px;' >躲避拥堵多路线信息统计</a>
+                        </div>
+                        <div style='width:100%;height:400px;background:#000'>
+                            <div id='div_key_citys_16_client_get_num_pie' style='width:40%;height:400px;float:left;background:#800' ></div>
+                            <div id='div_key_citys_16_client_get_num_stock' style='width:59.7%;height:400px;float:right;background:#a00' ></div>
+                        </div>
+                        <div id='div_key_citys_16_re_src_num_column' style='width:100%;height:400px;background:#080'></div>
+                        <div style='width:100%;height:10px;'></div>
+                    </div>
+                        
+                    <div id = "div_other_citys" style="width:100%" >
+                        <div style='width:100%;height:40px;background:#acb'>
+                            <a style='font-size:28px;' >其他城市信息统计</a>
+                        </div>
+                        <div style='width:100%;height:30px;background:#acb;'>
+                            <a style='font-size:20px'>城市选择：</a>
+                            <select name='select_other_city' id='select_other_city'>
+                            </select>
+                            <input type='button' value='城市信息查询' onclick='other_city_on_click()' ></input>
+                        </div>
+                        <div style='width:100%;height:32px;background:#cba'>
+                            <a style='font-size:28px;' >默认多路线信息统计</a>
+                        </div>
+                        <div style='width:100%;height:400px;background:#000'>
+                            <div id='div_other_citys_1_client_get_num_pie' style='width:40%;height:400px;float:left;background:#800' ></div>
+                            <div id='div_other_citys_1_client_get_num_stock' style='width:59.7%;height:400px;float:right;background:#a00' ></div>
+                        </div>
+                        <div id='div_other_citys_1_re_src_num_column' style='width:100%;height:400px;background:#080'></div>
+                        
+                        <div style='width:100%;height:32px;background:#cba'>
+                            <a style='font-size:28px;' >躲避拥堵多路线信息统计</a>
+                        </div>
+                        <div style='width:100%;height:400px;background:#000'>
+                            <div id='div_other_citys_16_client_get_num_pie' style='width:40%;height:400px;float:left;background:#800' ></div>
+                            <div id='div_other_citys_16_client_get_num_stock' style='width:59.7%;height:400px;float:right;background:#a00' ></div>
+                        </div>
+                        <div id='div_other_citys_16_re_src_num_column' style='width:100%;height:400px;background:#080'></div>
+                        
+                        <div style='width:100%;height:10px;'></div>
+                    </div>
+                </center>
+                </br>
+            </div>
+        </div>
+    </form>
+</body>
+
+
+<script type="text/javascript">
+    JQ = jQuery.noConflict();
+    var host_port   = $:global_info ;
+    var host        = "http://" + host_port[0] ;
+    var port_num    = host_port[1] ;
+    function button_jump_click( target_page ){
+        var url = host + ":" + port_num + "/" + target_page;
+        window.open( url , "_self");
+    }
+    
+    
+    JQ(function() {
+        JQ( "#datepicker_from" ).datepicker();
+    });
+    
+    JQ(function() {
+        JQ( "#datepicker_to" ).datepicker();
+    });
+    
+    
+    var show_type = "day";
+    var data_dict = {};
+    
+    var prefer_div_color_list = [ "#88a" , "#a88" ];
+    var prefer_to_name = {};
+    prefer_to_name[ "1" ] = "默认多路线";
+    prefer_to_name[ "16" ] = "躲避拥堵多路线";
+    
+    var city_show_list = [ "beijing" , "shanghai" , "guangzhou" , "shenzhen" ];
+    var city_to_name = {};
+    city_to_name[ "beijing" ]     = "北京";
+    city_to_name[ "shanghai" ]    = "上海";
+    city_to_name[ "guangzhou" ]   = "广州";
+    city_to_name[ "shenzhen" ]    = "深圳";
+    
+    function createStockChart( div_id , title , ytitle , decimals , suffix , ysuffix , mydata , need_point ){
+        JQ('#' + div_id ).highcharts
+        (
+            'StockChart',
+            {
+                chart: {
+                    type: 'spline'
+                },
+                credits: {
+                    enabled: false
+                },
+                title: {
+                    text: title
+                },
+                xAxis: {
+                    type: 'datetime'
+                },
+                yAxis: {
+                    title: {
+                        text: ytitle
+                    },
+                    labels: {
+                        formatter: function() {
+                            return this.value + ysuffix
+                        }
+                    }
+                },
+                legend: { 
+                    enabled: true 
+                },
+                tooltip: {
+                    crosshairs: true,
+                    shared: true,
+                    useHTML : true,
+                    headerFormat : '<small>{point.key}</small><table>',
+                    pointFormat : '<tr><td style="color:{series.color}">{series.name}:</td>' + '<td style="text-align:right"><b>{point.y}</b></td></tr>',
+                    footerFormat: '</table>',
+                    valueDecimals : decimals,
+                    valueSuffix: suffix
+                },
+                plotOptions: {
+                    series: {
+                        marker: {
+                            enabled: need_point
+                        }
+                    }
+                },
+                navigator: {
+                    margin: 2,
+                    height: 20
+                },
+                rangeSelector: {
+                    enabled: false
+                },
+                series: mydata
+            }
+        );
+    }
+    
+    function createColumnNumPercent( div_id , title , ytitle , x_cate , decimals , suffix , ysuffix , mydata , total_num ){
+        JQ('#' + div_id ).highcharts
+        (
+            {
+                chart: {
+                    type: 'column'
+                },
+                credits: { 
+                    enabled: false 
+                },
+                title: {
+                    text: title
+                },
+                xAxis: {
+                    categories: x_cate
+                },
+                yAxis: {
+                    title: {
+                        text: ytitle
+                    },
+                    labels: {
+                        formatter: function() {
+                            return this.value + ysuffix;
+                        }
+                    }
+                },
+                tooltip: {
+                    formatter: function() {
+                        return '<b>数目&比例</b><br>' +
+                            '数目:  ' + Highcharts.numberFormat(this.y, 0) + '<br>' +
+                            '比例:  ' + Highcharts.numberFormat( this.y * 100 / total_num , 2 ) + '%';
+                    }    
+                    
+                },
+                series: mydata
+            }
+		);
+	}
+    
+    function createPieNumPercent( div_id , title , decimals , suffix , mydata , total_num ){
+        JQ('#' + div_id ).highcharts(
+            {
+                title: { 
+                    text: title 
+                },
+                tooltip: {
+                    formatter: function() {
+                        return '<b>数目&比例</b><br>' +
+                            '数目:  ' + Highcharts.numberFormat(this.y, 0) + '<br>' +
+                            '比例:  ' + Highcharts.numberFormat( this.y * 100 / total_num , 2 ) + '%';
+                    }    
+                },
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer'
+                    }
+                },
+                series: mydata
+            }
+        );
+	}
+    
+    function draw_prefer_info_table( cur_data_dict , cur_div ){
+        var cgn_hdw_key = "client_get_num_hour_list";
+        var point_interval = 3600 * 1000;
+        var need_point = false;
+        var start_time = data_dict[ "hour_range" ][0] * 3600 * 1000;
+        if( show_type == "day" ){
+            cgn_hdw_key = "client_get_num_day_list";
+            point_interval = 24 * 3600 * 1000;
+            need_point = true;
+            start_time = data_dict[ "day_range" ][0] * 3600 * 1000;
+        }else if( show_type == "week" ){
+            cgn_hdw_key = "client_get_num_week_list";
+            point_interval = 7 * 24 * 3600 * 1000;
+            need_point = true;
+            start_time = data_dict[ "week_range" ][0] * 3600 * 1000;
+        }
+        
+        
+        for( var i = 0 ; i < cur_data_dict[ "prefer_name_list" ].length ; i++ ){
+            var pre_suffix = cur_div + "_" + cur_data_dict[ "prefer_name_list" ][i];
+            var prefer_data = cur_data_dict[ "prefer_info_list" ][i];
+            
+            var mydata=[];
+            
+            var total_num = 0 ;
+            var in_date = [];
+            for( var j = 0 ; j < prefer_data[ "client_get_num_name" ].length ; j++ ){
+                if( parseInt( prefer_data[ "client_get_num_name" ][ j ] ) == 0 )
+                {
+                    continue;
+                }
+                in_date.push( [ prefer_data[ "client_get_num_name" ][j] + "" , prefer_data[ "client_get_num_count" ][j] ] );
+                total_num += parseInt( prefer_data[ "client_get_num_count" ][j] );            
+            }
+            mydata=[
+                {
+                    type: 'pie',
+                    name: '次数',
+                    data: in_date
+                }
+            ];
+            createPieNumPercent( pre_suffix + "_client_get_num_pie" , "产品表现分布" , 0 , "" , mydata , total_num );
+            
+            
+            
+            
+            
+            
+            var total_cgn_hdw_list = [];
+            var is_first = 1;
+            for( var j = 0 ; j < prefer_data[ "client_get_num_name" ].length ; j++ ){
+                if( parseInt( prefer_data[ "client_get_num_name" ][ j ] ) == 0 )
+                {
+                    continue;
+                }
+                var cur_hdw_list = prefer_data[ cgn_hdw_key ][j];
+                if( is_first == 1 ){
+                    for( var k = 0 ; k < cur_hdw_list.length ; k++ ){
+                        total_cgn_hdw_list.push( parseInt( cur_hdw_list[k] ) );
+                    }
+                    is_first = 0;
+                }else{
+                    for( var k = 0 ; k < cur_hdw_list.length ; k++ ){
+                        total_cgn_hdw_list[k] += parseInt( cur_hdw_list[k] );
+                    }
+                }
+            }
+            mydata = [];
+            for( var j = 0 ; j < prefer_data[ "client_get_num_name" ].length ; j++ ){
+                if( parseInt( prefer_data[ "client_get_num_name" ][ j ] ) == 0 )
+                {
+                    continue;
+                }
+                var cur_hdw_list = prefer_data[ cgn_hdw_key ][j];
+                var cur_hdw_percent_list = [];
+                for( var k = 0 ; k < cur_hdw_list.length ; k++ ){
+                    if( total_cgn_hdw_list[k] > 0 ){
+                        cur_hdw_percent_list.push( cur_hdw_list[k] * 100.0 / total_cgn_hdw_list[k] );
+                    }else{
+                        cur_hdw_percent_list.push( 0 );
+                    }
+                }
+                mydata.push(
+                    {
+                    name : "" + prefer_data[ "client_get_num_name" ][j],
+                    pointInterval: point_interval,
+                    pointStart: start_time ,
+                    data: cur_hdw_percent_list
+                    } 
+                );
+            } 
+            createStockChart( pre_suffix + "_client_get_num_stock" , "产品表现趋势统计" , "产品表现比例" , 2 , '%' , '%' , mydata , need_point );
+            
+            
+            
+            
+            total_num = 0;
+            for( var j = 0 ; j < prefer_data[ "re_src_num_name" ].length ; j++ ){
+                total_num += parseInt( prefer_data[ "re_src_num_count" ][j] );
+            }
+            mydata=[{
+                name: '次数&比例',
+                data: prefer_data[ "re_src_num_count" ]
+            }];
+            createColumnNumPercent( pre_suffix + "_re_src_num_column" ,  
+                "召回表现分布" ,  
+                "分布次数" , 
+                prefer_data[ "re_src_num_name" ]  , 
+                0 , "" , "" , 
+                mydata , total_num );
+            
+            
+        }
+    }
+    
+    
+    function button_hour_click(){
+        show_type = "hour";
+        draw_all_tables();
+    }
+    
+    function button_day_click(){
+        show_type = "day";
+        draw_all_tables();
+    }
+    
+    function button_week_click(){
+        show_type = "week";
+        draw_all_tables();
+    }
+    
+    
+    
+    function draw_all_citys_tables(){
+        draw_prefer_info_table( data_dict , "div_total_city" );
+    }
+    
+    
+    function key_city_on_click( city_name ){
+        for( var i = 0 ; i < data_dict[ "city_name_list" ].length ; i++ ){
+            if( data_dict[ "city_name_list" ][i] == city_name ){
+                document.getElementById( "div_cur_city_name" ).innerHTML 
+                    = "<a style='font-size:20px;' >当前城市：" + city_to_name[ city_name ] + "</a>";
+                draw_prefer_info_table( data_dict[ "city_info_list" ][i] , "div_key_citys" );
+                break;
+            }
+        }
+    }
+    
+    function draw_key_citys_tables(){
+        key_city_on_click( "beijing" );
+    }
+    
+    
+    function other_city_on_click( ){
+        var city_name = document.getElementById( "select_other_city" ).value;
+        for( var i = 0 ; i < data_dict[ "city_name_list" ].length ; i++ ){
+            if( data_dict[ "city_name_list" ][i] == city_name ){
+                draw_prefer_info_table( data_dict[ "city_info_list" ][i] , "div_other_citys" );
+                break;
+            }
+        }
+    }
+        
+                        
+    function draw_other_city_tables(){
+        var my_city_name = [];
+        for( var i = 0 ; i < data_dict[ "city_name_list" ].length ; i++ ){
+            my_city_name.push( data_dict[ "city_name_list" ][i] );
+        }
+        my_city_name.sort();
+    
+        var inner_html = "";
+        for( var i = 0 ; i < my_city_name.length ; i++ ){
+            inner_html = inner_html +
+                    "<option value ='" + my_city_name[i] + "'>" + my_city_name[i] + "</option>";
+        }
+        document.getElementById( "select_other_city" ).innerHTML = inner_html;
+        other_city_on_click();
+    }
+    
+    
+    function draw_all_tables(){
+        draw_all_citys_tables();
+        draw_key_citys_tables();
+        draw_other_city_tables();
+    }
+    
+    
+    var xmlHTTP     = new XMLHttpRequest();
+    function query_info_done(){
+        if( xmlHTTP.readyState == 4 && xmlHTTP.status == 200){
+            json_obj = eval('(' + xmlHTTP.responseText + ')');
+            
+            document.getElementById("datepicker_from").value = json_obj['date_from'];
+            document.getElementById("datepicker_to").value   = json_obj['date_to'];
+            data_dict = json_obj;
+            data_len  = data_dict['data_len'];
+            if( data_len <= 0 ){
+                alert( "该查询日期内无数据");
+                exit(0) ;
+            }
+            
+            draw_all_tables();
+        }
+    }
+
+
+
+    function search_button_on_click(  ){
+        var url = host + ":" + port_num + "/multi_route_recall_get_data";
+        var info = "";
+        info = info + "date_from=" + document.getElementById("datepicker_from").value ;
+        info = info + "&date_to=" + document.getElementById("datepicker_to").value ;
+        xmlHTTP.open("POST", url, true);
+        xmlHTTP.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+        xmlHTTP.onreadystatechange = query_info_done;
+        xmlHTTP.send( info );
+    }
+    
+    search_button_on_click();
+    
+    
+</script>
+
+
+
+</html>

@@ -1,0 +1,854 @@
+$def with( global_info)
+
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>导航偏好策略信息统计</title>
+    
+    <script src="/static/js/jquery.min.js"></script>    
+    <script src="/static/js/highstock.js"></script>
+    <script src="/static/js/exporting.js"></script> 
+    <script src="/static/js/jquery.min.map"></script>   
+    <script src="/static/jquery-ui-1.10.3/ui/jquery.ui.core.js"></script>
+    <script src="/static/jquery-ui-1.10.3/ui/jquery.ui.widget.js"></script>
+    <script src="/static/jquery-ui-1.10.3/ui/jquery.ui.datepicker.js"></script>
+    <link rel="stylesheet" href="/static/jquery-ui-1.10.3/themes/base/jquery.ui.all.css">
+    <link rel="stylesheet" href="/static/jquery-ui-1.10.3/demos/demos.css">
+    <style type="text/css">
+        html,body
+        {
+            height: 100%;
+            margin: 0;
+            
+        }
+        .left
+        {
+            float: left;
+            height: 6000px;
+            width: 200px;
+            background:#88ee88;
+            border: 5px solid #88ee88 ;
+        }
+        .right
+        {
+            margin-left:210px; 
+            height: 6000px;
+            width: 1100px;
+            background:#eeffee;
+            border: 3px solid #80e080 ;
+        }  
+        .divtool
+        {
+            width: 100%;
+            height: 100px;
+            box-shadow: 0 0 1px #0f0f0f;
+        }
+        .divcomment
+        {
+            width: 100%;
+            height: 5900px ;
+            background:#ffffee ;
+        }
+        .divtoolname
+        {
+            width: 100%;
+            height: 35%;
+            text-align:center;
+            background:#ccffdd;
+            box-shadow: 0 0 3px #0f0f0f;
+        }
+        .divtooltools
+        {
+            width: 100%;
+            height: 63%;
+            box-shadow: 0 0 3px #0f0f0f;
+        }
+        .buttonLeft
+        {
+            width:80%;
+            height:30px;
+            box-shadow: 0 0 1px #0f0f0f;
+        }
+    </style>
+</head>
+<body>
+    <form id="log_form" method="POST">
+        <div class="left" id="div_left">
+            <div style="width:100%;height:130px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >概览信息</a>
+                    </div>
+                    <p><input type="button" value="导航统计概览" class="buttonLeft" onclick="button_jump_click('top_all')"></p>
+                    <p><input type="button" value="导航关键统计报表" class="buttonLeft" onclick="button_jump_click('kes_stat')"></p>
+                </center>
+            </div>
+            </br>
+            <div style="width:100%;height:150px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >日志信息查询</a>
+                    </div>
+                    <p><input type="button" value="错误日志查询" class="buttonLeft" onclick="button_jump_click('error_log')"></p>
+                    <p><input type="button" value="cuid查询" class="buttonLeft" onclick="button_jump_click('cuid_log')" ></p>
+                </center>
+            </div>
+            </br>
+            <div style="width:100%;height:300px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >端信息查询</a>
+                    </div>
+                    <p><input type="button" value="端pv统计"  class="buttonLeft"  onclick="button_jump_click('port_pv')" ></p>
+                    <p><input type="button" value="端错误率统计"  class="buttonLeft"  onclick="button_jump_click('port_error')" ></p>
+                    <p><input type="button" value="端非法率统计"  class="buttonLeft"  onclick="button_jump_click('port_illegal')" ></p>
+                    <p><input type="button" value="端数据量统计"  class="buttonLeft"  onclick="button_jump_click('port_data')" ></p>
+                    <p><input type="button" value="端性能统计"  class="buttonLeft"  onclick="button_jump_click('port_performance')" ></p>
+                    <p><input type="button" value="偏航统计" class="buttonLeft" onclick="button_jump_click('yawpos_summary')" ></p>
+                </center>
+            </div>
+            </br>
+            <div style="width:100%;height:300px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >version信息查询</a>
+                    </div>
+                    <p><input type="button" value="version-pv统计"  class="buttonLeft" onclick="button_jump_click('version_pv')" ></p>
+                    <p><input type="button" value="version错误率统计"  class="buttonLeft" onclick="button_jump_click('version_error')" ></p>
+                    <p><input type="button" value="version非法率统计"  class="buttonLeft" onclick="button_jump_click('version_illegal')" ></p>
+                    <p><input type="button" value="version数据量统计" class="buttonLeft"  onclick="button_jump_click('version_data')" ></p>
+                    <p><input type="button" value="version性能统计" class="buttonLeft" onclick="button_jump_click('version_performance')" ></p>
+                    <p><input type="button" value="模块性能统计" class="buttonLeft" onclick="button_jump_click('module_performance')" ></p>
+                </center>
+            </div>
+            </br>
+            <div style="width:100%;height:120px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >用户反馈信息查询</a>
+                    </div>
+                    <p><input type="button" value="用户吐槽类型统计"  class="buttonLeft" onclick="button_jump_click('naviure_type_flag')" ></p>
+                </center>
+            </div>
+            </br>
+            <div style="width:100%;height:300px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >其他信息查询</a>
+                    </div>
+                    <p><input type="button" value="multinavi session 统计" class="buttonLeft" onclick="button_jump_click('multinavi_session_query')" ></p>
+                    <p><input type="button" value="特殊路线pv统计" class="buttonLeft" onclick="button_jump_click('special_route_type_pv')" ></p>
+                    <p><input type="button" value="城市query统计" class="buttonLeft" onclick="button_jump_click('city_query')" ></p>
+                    <p><input type="button" value="多路线召回信息统计" class="buttonLeft" onclick="button_jump_click('multi_route_recall')" ></p>
+                    <p><input type="button" value="导航偏好信息统计" class="buttonLeft" onclick="button_jump_click('navigation_preference')" ></p>
+                    <p><input type="button" value="时间评估统计" class="buttonLeft" onclick="button_jump_click('route_time_ratio')" ></p>
+                </center>
+            </div>
+        </div>
+        <div class="right" id="div_right">
+            <div class="divtool">
+                <div class="divtoolname">
+                    <a style="font-size:20px">导航偏好策略信息统计</a>
+                    
+                </div>
+                <div class="divtooltools">
+                    <div style="margin-left:2px;float:left;width:250px;height:98%;background:#bcdeff;box-shadow: 0 0 1px #000;">
+                        <center>
+                            <div style="width:100%;height:22px;background:#abcdef;">
+                                <a style="font-size:20px;" >时间选择 </a>
+                            </div>
+                            <div style="width:100%;height:5px;"></div>
+                            From: <input type="text" id="datepicker_from" name="datepicker_from" style="width:80px" >
+                            To: <input type="text" id="datepicker_to" name="datepicker_to" style="width:80px" >
+                        </center>
+                    </div>
+                    <div style="margin-left:3px;float:left;width:120px;height:98%;background:#bcdeff;box-shadow: 0 0 1px #000;">
+                        <center>
+                            <div style="width:100%;height:22px;background:#abcdef;">
+                                <a style="font-size:20px;" >查询操作 </a>
+                            </div>
+                            <div style="width:100%;height:5px;"></div>
+                            <input type="button" value="查询"  name="Button_Search" id="Button_Search" 
+                                    style="width:100px;height:25px;box-shadow: 0 0 1px #0f0f0f;" 
+                                    onclick="search_button_on_click()">
+                        </center>
+                    </div>
+                    <div style="margin-left:3px;float:left;width:360px;height:98%;background:#bcdeff;box-shadow: 0 0 1px #000;">
+                        <center>
+                            <div style="width:100%;height:22px;background:#abcdef;">
+                                <a style="font-size:20px;" >展示选项 </a>
+                            </div>
+                            <div style="width:100%;height:5px;"></div>
+                            <input type="button" id="button_hour" name="button_hour" value="按小时展示" style="width:100px;height:25px;box-shadow: 0 0 1px #0f0f0f;" onclick="button_hour_click()" >
+                            <input type="button" id="button_day" name="button_day" value="按天数展示" style="width:100px;height:25px;box-shadow: 0 0 1px #0f0f0f;" onclick="button_day_click()" >
+                            <input type="button" id="button_week" name="button_week" value="按周展示" style="width:100px;height:25px;box-shadow: 0 0 1px #0f0f0f;" onclick="button_week_click()" >
+                        </center>
+                    </div>
+                </div>
+            </div>
+            <div class="divcomment">
+                <br/>
+                <center>
+                    <div style="width:100%">
+                        <div style="width:100%;height:390px;background:#000">
+                            <div id="div_preference_pv" style="width:49.9%;float:left;height:100%;background:#800" ></div>
+                            <div id="div_preference_pv_percent" style="width:49.9%;float:right;height:100%;background:#a00" ></div>
+                        </div>
+                        <div style="width:100%;height:2px;background:#000">
+                        </div>
+                        <div style="width:100%;height:390px;background:#000">
+                            <div id="div_preference_err_ratio" style="width:49.9%;float:left;height:100%;background:#080" ></div>
+                            <div id="div_preference_err_percent" style="width:49.9%;float:right;height:100%;background:#0a0" ></div>
+                        </div>
+                        <div style="width:100%;height:2px;background:#000">
+                        </div>
+                        <div style="width:100%;height:390px;background:#000">
+                            <div id="div_preference_avg_time" style="width:49.9%;float:left;height:100%;background:#800" ></div>
+                            <div id="div_preference_avg_size" style="width:49.9%;float:right;height:100%;background:#a00" ></div>
+                        </div>
+                        <div style="width:100%;height:2px;background:#000">
+                        </div>
+                        <div style="width:100%;height:400px;background:#000">
+                            <div id="div_preference_time_dis" style="width:99.5%;height:100%;background:#800" ></div>
+                        </div>
+                        <div style="width:100%;height:2px;background:#000">
+                        </div>
+                        <div style="width:100%;height:400px;background:#000">
+                            <div id="div_preference_size_dis" style="width:99.5%;height:100%;background:#800" ></div>
+                        </div>
+                    </div>
+                    <div style="width:100%;height:20px;background:#008">
+                    </div>
+                    <div style="width:100%;height:50px;background:#aef">
+                        <a style="font-size:20px">偏航策略qt-version信息查询 , 偏航策略选择：</a>
+                        <select name="select_navigation_preference" id="select_navigation_preference">
+                        </select>
+                        <input type="button" value="信息查询" onclick="button_part_info_click()" >
+                    </div>
+                    <div style="width:100%">
+                        <div style="width:100%;height:390px;background:#000">
+                            <div id="div_preference_qv_pv" style="width:49.9%;float:left;height:100%;background:#800" ></div>
+                            <div id="div_preference_qv_pv_percent" style="width:49.9%;float:right;height:100%;background:#a00" ></div>
+                        </div>
+                        <div style="width:100%;height:2px;background:#000">
+                        </div>
+                        <div style="width:100%;height:390px;background:#000">
+                            <div id="div_preference_qv_err_ratio" style="width:49.9%;float:left;height:100%;background:#080" ></div>
+                            <div id="div_preference_qv_err_percent" style="width:49.9%;float:right;height:100%;background:#0a0" ></div>
+                        </div>
+                        <div style="width:100%;height:2px;background:#000">
+                        </div>
+                        <div style="width:100%;height:390px;background:#000">
+                            <div id="div_preference_qv_avg_time" style="width:49.9%;float:left;height:100%;background:#800" ></div>
+                            <div id="div_preference_qv_avg_size" style="width:49.9%;float:right;height:100%;background:#a00" ></div>
+                        </div>
+                        <div style="width:100%;height:2px;background:#000">
+                        </div>
+                        <div style="width:100%;height:400px;background:#000">
+                            <div id="div_preference_qv_time_dis" style="width:99.5%;height:100%;background:#800" ></div>
+                        </div>
+                        <div style="width:100%;height:2px;background:#000">
+                        </div>
+                        <div style="width:100%;height:400px;background:#000">
+                            <div id="div_preference_qv_size_dis" style="width:99.5%;;height:100%;background:#800" ></div>
+                        </div>
+                    </div>
+                </center>
+                </br>
+                
+            </div>
+        </div>
+    </form>
+</body>
+
+
+<script type="text/javascript">
+    JQ = jQuery.noConflict();
+    
+    var host_port   = $:global_info ;
+    var host        = "http://" + host_port[0] ;
+    var port_num    = host_port[1] ;
+    function button_jump_click( target_page ){
+        var url = host + ":" + port_num + "/" + target_page;
+        window.open( url , "_self");
+    }
+    
+    
+    JQ(function() {
+        JQ( "#datepicker_from" ).datepicker();
+    });
+    
+    JQ(function() {
+        JQ( "#datepicker_to" ).datepicker();
+    });
+    
+    var show_type   = "day";
+    var data_len    = 0 ;
+    var data_dict   = {};
+    var preference_name_dict = {};
+    preference_name_dict[ "less_time_multi" ]       = "最短时间多路线";
+    preference_name_dict[ "less_length_multi" ]     = "最短路程多路线";
+    preference_name_dict[ "no_high_multi" ]         = "不走高速多路线";
+    preference_name_dict[ "avoid_crowd_multi" ]     = "躲避拥堵多路线";
+    preference_name_dict[ "high_priority_multi" ]   = "高速优先多路线";
+    preference_name_dict[ "avoid_charge_multi" ]    = "避免收费多路线";
+    preference_name_dict[ "avoid_crowd_high_priority_multi" ]   = "躲避拥堵+高速优先多路线";
+    preference_name_dict[ "avoid_crowd_avoid_charge_multi" ]    = "躲避拥堵+避免收费多路线";
+    
+    var navigation_preference_select = document.getElementById("select_navigation_preference");
+    
+    
+    function createStockChart( div_id , title , ytitle , decimals , suffix , ysuffix , mydata , need_point ){
+        JQ('#' + div_id ).highcharts
+        (
+            'StockChart',
+            {
+                chart: {
+                    type: 'spline'
+                },
+                credits: {
+                    enabled: false
+                },
+                title: {
+                    text: title
+                },
+                xAxis: {
+                    type: 'datetime'
+                },
+                yAxis: {
+                    title: {
+                        text: ytitle
+                    },
+                    labels: {
+                        formatter: function() {
+                            return this.value + ysuffix
+                        }
+                    }
+                },
+                legend: { 
+                    enabled: true 
+                },
+                tooltip: {
+                    crosshairs: true,
+                    shared: true,
+                    useHTML : true,
+                    headerFormat : '<small>{point.key}</small><table>',
+                    pointFormat : '<tr><td style="color:{series.color}">{series.name}:</td>' + '<td style="text-align:right"><b>{point.y}</b></td></tr>',
+                    footerFormat: '</table>',
+                    valueDecimals : decimals,
+                    valueSuffix: suffix
+                },
+                plotOptions: {
+                    series: {
+                        marker: {
+                            enabled: need_point
+                        }
+                    }
+                },
+                navigator: {
+                    margin: 2,
+                    height: 20
+                },
+                rangeSelector: {
+                    enabled: false
+                },
+                series: mydata
+            }
+        );
+    }
+    
+    
+    
+    
+    
+    function createColumn( div_id , title , ytitle , x_cate , decimals , suffix , ysuffix , mydata ){
+		JQ('#' + div_id ).highcharts
+		(
+            {
+                chart: {
+                    type: 'column'
+                },
+                credits: { 
+                    enabled: false 
+                },
+                title: {
+                    text: title
+                },
+                xAxis: {
+                    categories: x_cate
+                },
+                yAxis: {
+                    title: {
+                        text: ytitle
+                    },
+                    labels: {
+                        formatter: function() {
+                            return this.value + ysuffix;
+                        }
+                    }
+                },
+                tooltip: {
+                    crosshairs: true,
+                    shared: true,
+                    useHTML : true,
+                    headerFormat : '<small>{point.key}</small><table>',
+                    pointFormat : '<tr><td style="color:{series.color}">{series.name}:</td>' + '<td style="text-align:right"><b>{point.y}</b></td></tr>',
+                    footerFormat: '</table>',
+                    valueDecimals : decimals,
+                    valueSuffix: suffix
+                },
+                series: mydata
+            }
+		);
+	}
+    
+    function createPie( div_id , title , mycolors , decimals , suffix , mydata ){
+        JQ('#' + div_id ).highcharts(
+            {
+                title: { 
+                    text: title 
+                },
+                tooltip: {
+                    crosshairs: true,
+                    shared: true,
+                    useHTML : true,
+                    headerFormat : '<small>{point.key}</small><table>',
+                    pointFormat : '<tr><td style="color:{series.color}">{series.name}:</td>' + '<td style="text-align:right"><b>{point.y}</b></td></tr>',
+                    footerFormat: '</table>',
+                    valueDecimals : decimals,
+                    valueSuffix: suffix
+                },
+                colors: mycolors,
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer'
+                    }
+                },
+                series: mydata
+            }
+        );
+	}
+    
+    
+        
+    function draw_all_tables(){
+        var name_list = data_dict[ "spm_name" ];
+        var size_vector = data_dict[ "size_vector" ];
+        var time_vector = data_dict[ "time_vector" ];
+        var size_vec_show	= [];
+        var time_vec_show   = [];
+        size_vec_show.push( "[0," + size_vector[0] + ")" );
+        for( var i = 0 ; i < size_vector.length - 1 ; i++ ){
+            size_vec_show.push( "[" + size_vector[i] + "," + size_vector[i + 1] + ")" );
+        }
+        size_vec_show.push( "[" + size_vector[ size_vector.length - 1 ] + ",+)" );
+        
+        time_vec_show.push( "[0," + time_vector[0] + ")" );
+        for( var i = 0 ; i < time_vector.length - 1 ; i++ ){
+            time_vec_show.push( "[" + time_vector[i] + "," + time_vector[i + 1] + ")" );
+        }
+        time_vec_show.push( "[" + time_vector[ time_vector.length - 1 ] + ",+)" );
+        
+        var pv_num_key = "hour_pv_num";
+        var pv_percent_key = "hour_pv_percent";
+        var err_ratio_key = "hour_err_ratio";
+        var err_percent_key = "hour_err_percent";
+        var avg_time_key = "hour_avg_time";
+        var avg_size_key = "hour_avg_size"
+        var start_time = parseInt( data_dict["hour_range"][0] ) * 3600 * 1000 ;
+        var pointInter = 3600 * 1000 ;
+        var need_point = false;
+        if( show_type == "day" ){
+            pv_num_key = "day_pv_num";
+            pv_percent_key = "day_pv_percent";
+            err_ratio_key = "day_err_ratio";
+            err_percent_key = "day_err_percent";
+            avg_time_key = "day_avg_time";
+            avg_size_key = "day_avg_size"
+            start_time = parseInt( data_dict["day_range"][0] ) * 3600 * 1000 ;
+            pointInter = 24 * 3600 * 1000 ;
+            need_point = true;
+        }else if( show_type == "week" ){
+            pv_num_key = "week_pv_num";
+            pv_percent_key = "week_pv_percent";
+            err_ratio_key = "week_err_ratio";
+            err_percent_key = "week_err_percent";
+            avg_time_key = "week_avg_time";
+            avg_size_key = "week_avg_size"
+            start_time = parseInt( data_dict["week_range"][0] ) * 3600 * 1000 ;
+            pointInter = 7 * 24 * 3600 * 1000 ;
+            need_point = true;
+        }
+        
+        
+		var mydata=[];
+		for( var i = 0 ; i < name_list.length ; i++ ){
+			mydata.push(
+				{
+					name : preference_name_dict[ name_list[i] ],
+					pointInterval: pointInter,
+					pointStart: start_time ,
+					data: data_dict["spm_data"][i][pv_num_key]
+				}
+			);
+            
+		}
+		createStockChart( "div_preference_pv" , "偏好策略pv数目" , "数目" , 0 , '' , '' , mydata , need_point );
+        
+        mydata=[];
+		for( var i = 0 ; i < name_list.length ; i++ ){
+			mydata.push(
+				{
+					name : preference_name_dict[ name_list[i] ],
+					pointInterval: pointInter,
+					pointStart: start_time ,
+					data: data_dict["spm_data"][i][pv_percent_key]
+				}
+			);
+            
+		}
+		createStockChart( "div_preference_pv_percent" , "偏好策略pv比例（策略pv次数/所有策略总pv次数）" , "比例" , 2 , '%' , '%' , mydata , need_point );
+        
+        
+        mydata=[];
+		for( var i = 0 ; i < name_list.length ; i++ ){
+			mydata.push(
+				{
+					name : preference_name_dict[ name_list[i] ],
+					pointInterval: pointInter,
+					pointStart: start_time ,
+					data: data_dict["spm_data"][i][err_ratio_key]
+				}
+			);
+            
+		}
+		createStockChart( "div_preference_err_ratio" , "偏好策略错误率（策略错误次数/策略pv次数）" , "错误率" , 2 , '%' , '%' , mydata , need_point );
+        
+        
+        mydata=[];
+		for( var i = 0 ; i < name_list.length ; i++ ){
+			mydata.push(
+				{
+					name : preference_name_dict[ name_list[i] ],
+					pointInterval: pointInter,
+					pointStart: start_time ,
+					data: data_dict["spm_data"][i][err_percent_key]
+				}
+			);
+            
+		}
+		createStockChart( "div_preference_err_percent" , "偏好策略错误比例（策略错误次数/策略总错误次数）" , "错误比例" , 2 , '%' , '%' , mydata , need_point );
+        
+        mydata=[];
+		for( var i = 0 ; i < name_list.length ; i++ ){
+			mydata.push(
+				{
+					name : preference_name_dict[ name_list[i] ],
+					pointInterval: pointInter,
+					pointStart: start_time ,
+					data: data_dict["spm_data"][i][avg_time_key]
+				}
+			);
+            
+		}
+		createStockChart( "div_preference_avg_time" , "偏好策略平均用时" , "用时" , 0 , 'ms' , 'ms' , mydata , need_point );
+        
+        mydata=[];
+		for( var i = 0 ; i < name_list.length ; i++ ){
+			mydata.push(
+				{
+					name : preference_name_dict[ name_list[i] ],
+					pointInterval: pointInter,
+					pointStart: start_time ,
+					data: data_dict["spm_data"][i][avg_size_key]
+				}
+			);
+            
+		}
+		createStockChart( "div_preference_avg_size" , "偏好策略平均数据量" , "数据量" , 0 , '0' , '0' , mydata , need_point );
+        
+
+        
+        mydata=[];
+		for( var i = 0 ; i < name_list.length ; i++ ){
+			mydata.push(
+				{
+					name : preference_name_dict[ name_list[i] ],
+					data: data_dict["spm_data"][i]["time_distribution"]
+				}
+			);
+            
+		}
+		createColumn( "div_preference_time_dis" , "偏好策略用时分布" , "用时分布" , time_vec_show , 2 , '%' , '%' , mydata );
+        
+        
+        mydata=[];
+		for( var i = 0 ; i < name_list.length ; i++ ){
+			mydata.push(
+				{
+					name : preference_name_dict[ name_list[i] ],
+					data: data_dict["spm_data"][i]["size_distribution"]
+				}
+			);
+            
+		}
+		createColumn( "div_preference_size_dis" , "偏好策略数据量分布" , "数据量分布" , size_vec_show , 2 , '%' , '%' , mydata );
+        
+    }
+    
+    
+    function draw_part_tables(){
+        var select_spm_name = navigation_preference_select.value;
+        var qv_data_dict = []
+        var qv_name_list = []
+        for( var i = 0 ; i < data_dict["spm_name"].length ; i++ ){
+            if( data_dict["spm_name"][i] == select_spm_name ){
+                qv_data_dict = data_dict["spm_data"][i]["qt_version_data"];
+                qv_name_list = data_dict["spm_data"][i]["qt_version_name"];
+                break;
+            }
+        }
+        var size_vector = data_dict[ "size_vector" ];
+        var time_vector = data_dict[ "time_vector" ];
+        var size_vec_show	= [];
+        var time_vec_show   = [];
+        size_vec_show.push( "[0," + size_vector[0] + ")" );
+        for( var i = 0 ; i < size_vector.length - 1 ; i++ ){
+            size_vec_show.push( "[" + size_vector[i] + "," + size_vector[i + 1] + ")" );
+        }
+        size_vec_show.push( "[" + size_vector[ size_vector.length - 1 ] + ",+)" );
+        
+        time_vec_show.push( "[0," + time_vector[0] + ")" );
+        for( var i = 0 ; i < time_vector.length - 1 ; i++ ){
+            time_vec_show.push( "[" + time_vector[i] + "," + time_vector[i + 1] + ")" );
+        }
+        time_vec_show.push( "[" + time_vector[ time_vector.length - 1 ] + ",+)" );
+        var pv_num_key = "hour_pv_num";
+        var pv_percent_key = "hour_pv_percent";
+        var err_ratio_key = "hour_err_ratio";
+        var err_percent_key = "hour_err_percent";
+        var avg_time_key = "hour_avg_time";
+        var avg_size_key = "hour_avg_size"
+        var start_time = parseInt( data_dict["hour_range"][0] ) * 3600 * 1000 ;
+        var pointInter = 3600 * 1000 ;
+        var need_point = false;
+        if( show_type == "day" ){
+            pv_num_key = "day_pv_num";
+            pv_percent_key = "day_pv_percent";
+            err_ratio_key = "day_err_ratio";
+            err_percent_key = "day_err_percent";
+            avg_time_key = "day_avg_time";
+            avg_size_key = "day_avg_size"
+            start_time = parseInt( data_dict["day_range"][0] ) * 3600 * 1000 ;
+            pointInter = 24 * 3600 * 1000 ;
+            need_point = true;
+        }else if( show_type == "week" ){
+            pv_num_key = "week_pv_num";
+            pv_percent_key = "week_pv_percent";
+            err_ratio_key = "week_err_ratio";
+            err_percent_key = "week_err_percent";
+            avg_time_key = "week_avg_time";
+            avg_size_key = "week_avg_size"
+            start_time = parseInt( data_dict["week_range"][0] ) * 3600 * 1000 ;
+            pointInter = 7 * 24 * 3600 * 1000 ;
+            need_point = true;
+        }
+        
+		var mydata=[];
+		for( var i = 0 ; i < qv_name_list.length ; i++ ){
+			mydata.push(
+				{
+					name : qv_name_list[i] ,
+					pointInterval: pointInter,
+					pointStart: start_time ,
+					data: qv_data_dict[i][pv_num_key]
+				}
+			);
+		}
+		createStockChart( "div_preference_qv_pv" , "qt-version的pv数目" , "数目" , 0 , '' , '' , mydata , need_point );
+        
+        mydata=[];
+		for( var i = 0 ; i < qv_name_list.length ; i++ ){
+			mydata.push(
+				{
+					name : qv_name_list[i],
+					pointInterval: pointInter,
+					pointStart: start_time ,
+					data: qv_data_dict[i][pv_percent_key]
+				}
+			);
+            
+		}
+		createStockChart( "div_preference_qv_pv_percent" , "qt-version的pv比例（qt-version的pv次数/该策略pv次数）" , "比例" , 2 , '%' , '%' , mydata , need_point );
+        
+        
+        mydata=[];
+		for( var i = 0 ; i < qv_name_list.length ; i++ ){
+			mydata.push(
+				{
+					name : qv_name_list[i],
+					pointInterval: pointInter,
+					pointStart: start_time ,
+					data: qv_data_dict[i][err_ratio_key]
+				}
+			);
+            
+		}
+		createStockChart( "div_preference_qv_err_ratio" , "qt-version的错误率（错误次数/该qt-version的pv次数）" , "错误率" , 2 , '%' , '%' , mydata , need_point );
+        
+        
+        mydata=[];
+		for( var i = 0 ; i < qv_name_list.length ; i++ ){
+			mydata.push(
+				{
+					name : qv_name_list[i],
+					pointInterval: pointInter,
+					pointStart: start_time ,
+					data: qv_data_dict[i][err_percent_key]
+				}
+			);
+            
+		}
+		createStockChart( "div_preference_qv_err_percent" , "qt-version的错误比例（错误次数/该策略错误次数）" , "错误比例" , 2 , '%' , '%' , mydata , need_point );
+        
+        mydata=[];
+		for( var i = 0 ; i < qv_name_list.length ; i++ ){
+			mydata.push(
+				{
+					name : qv_name_list[i],
+					pointInterval: pointInter,
+					pointStart: start_time ,
+					data: qv_data_dict[i][avg_time_key]
+				}
+			);
+            
+		}
+		createStockChart( "div_preference_qv_avg_time" , "qt-version的平均用时" , "用时" , 0 , 'ms' , 'ms' , mydata , need_point );
+        
+        mydata=[];
+		for( var i = 0 ; i < qv_name_list.length ; i++ ){
+			mydata.push(
+				{
+					name : qv_name_list[i],
+					pointInterval: pointInter,
+					pointStart: start_time ,
+					data: qv_data_dict[i][avg_size_key]
+				}
+			);
+            
+		}
+		createStockChart( "div_preference_qv_avg_size" , "qt-version的平均数据量" , "数据量" , 0 , '0' , '0' , mydata , need_point );
+        
+
+        
+        mydata=[];
+		for( var i = 0 ; i < qv_name_list.length ; i++ ){
+			mydata.push(
+				{
+					name : qv_name_list[i],
+					data: qv_data_dict[i]["time_distribution"]
+				}
+			);
+            
+		}
+		createColumn( "div_preference_qv_time_dis" , "qt-version的用时分布" , "用时分布" , time_vec_show , 2 , '%' , '%' , mydata );
+        
+        
+        mydata=[];
+		for( var i = 0 ; i < qv_name_list.length ; i++ ){
+			mydata.push(
+				{
+					name : qv_name_list[i],
+					data: qv_data_dict[i]["size_distribution"]
+				}
+			);
+            
+		}
+		createColumn( "div_preference_qv_size_dis" , "qt-version的数据量分布" , "数据量分布" , size_vec_show , 2 , '%' , '%' , mydata );
+        
+    }
+    
+    
+    
+    
+    function draw_tables(){
+        draw_all_tables();
+        draw_part_tables();
+    }
+    
+    
+    function button_hour_click(){
+        show_type = "hour";
+        draw_tables();
+    }
+    
+    
+    function button_day_click(){
+        show_type = "day";
+        draw_tables();
+    }
+    
+    function button_week_click(){
+        show_type = "week" ;
+        draw_tables();
+    }
+    
+    function button_part_info_click(){
+        draw_part_tables();
+    }
+    
+    
+    function deal_query_data( json_obj ){
+        
+        document.getElementById("datepicker_from").value = json_obj['date_from'];
+        document.getElementById("datepicker_to").value   = json_obj['date_to'];
+            
+        data_len    = json_obj['data_len'];
+        if( data_len <= 0 ){
+            alert( "该查询日期内无数据");
+            exit(0) ;
+        }
+        
+        data_dict = json_obj;
+         //   all_avg_ratio = Math.round( all_avg_ratio * 100 ) / 100;
+         
+         
+        for( var i = 0 ; i < data_dict["spm_name"].length ; i++ ){
+            navigation_preference_select.add( new Option( preference_name_dict[ data_dict["spm_name"][i] ] , data_dict["spm_name"][i] ) );
+        }
+         
+        button_day_click();
+    }
+    
+    
+    var xmlHTTP     = new XMLHttpRequest();
+    function query_info_done(){
+        if( xmlHTTP.readyState == 4 && xmlHTTP.status == 200){
+            json_obj = eval('(' + xmlHTTP.responseText + ')');
+            deal_query_data( json_obj );
+        }
+    }
+
+    function search_button_on_click(  ){
+        var url = host + ":" + port_num + "/navigation_preference_get_data";
+        var info = "";
+        info = info + "date_from=" + document.getElementById("datepicker_from").value ;
+        info = info + "&date_to=" + document.getElementById("datepicker_to").value ;
+        xmlHTTP.open("POST", url, true);
+        xmlHTTP.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+        xmlHTTP.onreadystatechange = query_info_done;
+        xmlHTTP.send( info );
+    }
+    
+    
+    
+    
+    search_button_on_click();
+
+    
+</script>
+
+
+
+</html>

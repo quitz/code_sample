@@ -1,0 +1,490 @@
+$def with( global_info)
+
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>用户吐槽类型统计</title>
+    
+    <script src="/static/js/jquery.min.js"></script>    
+    <script src="/static/js/highstock.js"></script>
+    <script src="/static/js/exporting.js"></script> 
+    <script src="/static/js/jquery.min.map"></script>   
+    <script src="/static/jquery-ui-1.10.3/ui/jquery.ui.core.js"></script>
+    <script src="/static/jquery-ui-1.10.3/ui/jquery.ui.widget.js"></script>
+    <script src="/static/jquery-ui-1.10.3/ui/jquery.ui.datepicker.js"></script>
+    <link rel="stylesheet" href="/static/jquery-ui-1.10.3/themes/base/jquery.ui.all.css">
+    <link rel="stylesheet" href="/static/jquery-ui-1.10.3/demos/demos.css">
+    <style type="text/css">
+        html,body
+        {
+            height: 100%;
+            margin: 0;
+            
+        }
+        .left
+        {
+            float: left;
+            height: 6000px;
+            width: 200px;
+            background:#88ee88;
+            border: 5px solid #88ee88 ;
+        }
+        .right
+        {
+            margin-left:210px; 
+            height: 6000px;
+            width: 1100px;
+            background:#eeffee;
+            border: 3px solid #80e080 ;
+        }  
+        .divtool
+        {
+            width: 100%;
+            height: 100px;
+            box-shadow: 0 0 1px #0f0f0f;
+        }
+        .divcomment
+        {
+            width: 100%;
+            height: 5900px ;
+            background:#ffffee ;
+        }
+        .divtoolname
+        {
+            width: 100%;
+            height: 35%;
+            text-align:center;
+            background:#ccffdd;
+            box-shadow: 0 0 3px #0f0f0f;
+        }
+        .divtooltools
+        {
+            width: 100%;
+            height: 63%;
+            box-shadow: 0 0 3px #0f0f0f;
+        }
+        .buttonLeft
+        {
+            width:80%;
+            height:30px;
+            box-shadow: 0 0 1px #0f0f0f;
+        }
+    </style>
+</head>
+<body>
+    <form id="log_form" method="POST">
+        <div class="left" id="div_left">
+            <div style="width:100%;height:130px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >概览信息</a>
+                    </div>
+                    <p><input type="button" value="导航统计概览" class="buttonLeft" onclick="button_jump_click('top_all')"></p>
+                    <p><input type="button" value="导航关键统计报表" class="buttonLeft" onclick="button_jump_click('kes_stat')"></p>
+                </center>
+            </div>
+            </br>
+            <div style="width:100%;height:150px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >日志信息查询</a>
+                    </div>
+                    <p><input type="button" value="错误日志查询" class="buttonLeft" onclick="button_jump_click('error_log')"></p>
+                    <p><input type="button" value="cuid查询" class="buttonLeft" onclick="button_jump_click('cuid_log')" ></p>
+                </center>
+            </div>
+            </br>
+            <div style="width:100%;height:300px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >端信息查询</a>
+                    </div>
+                    <p><input type="button" value="端pv统计"  class="buttonLeft"  onclick="button_jump_click('port_pv')" ></p>
+                    <p><input type="button" value="端错误率统计"  class="buttonLeft"  onclick="button_jump_click('port_error')" ></p>
+                    <p><input type="button" value="端非法率统计"  class="buttonLeft"  onclick="button_jump_click('port_illegal')" ></p>
+                    <p><input type="button" value="端数据量统计"  class="buttonLeft"  onclick="button_jump_click('port_data')" ></p>
+                    <p><input type="button" value="端性能统计"  class="buttonLeft"  onclick="button_jump_click('port_performance')" ></p>
+                    <p><input type="button" value="偏航统计" class="buttonLeft" onclick="button_jump_click('yawpos_summary')" ></p>
+                </center>
+            </div>
+            </br>
+            <div style="width:100%;height:300px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >version信息查询</a>
+                    </div>
+                    <p><input type="button" value="version-pv统计"  class="buttonLeft" onclick="button_jump_click('version_pv')" ></p>
+                    <p><input type="button" value="version错误率统计"  class="buttonLeft" onclick="button_jump_click('version_error')" ></p>
+                    <p><input type="button" value="version非法率统计"  class="buttonLeft" onclick="button_jump_click('version_illegal')" ></p>
+                    <p><input type="button" value="version数据量统计" class="buttonLeft"  onclick="button_jump_click('version_data')" ></p>
+                    <p><input type="button" value="version性能统计" class="buttonLeft" onclick="button_jump_click('version_performance')" ></p>
+                    <p><input type="button" value="模块性能统计" class="buttonLeft" onclick="button_jump_click('module_performance')" ></p>
+                </center>
+            </div>
+            </br>
+            <div style="width:100%;height:120px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >用户反馈信息查询</a>
+                    </div>
+                    <p><input type="button" value="用户吐槽类型统计"  class="buttonLeft" onclick="button_jump_click('naviure_type_flag')" ></p>
+                </center>
+            </div>
+            </br>
+            <div style="width:100%;height:300px;background:#ccbbdd;box-shadow: 0 0 3px #000;">
+                <center>
+                    <div style="width:100%;height:40px;background:#abcdef;">
+                        <a style="font-size:25px;" >其他信息查询</a>
+                    </div>
+                    <p><input type="button" value="multinavi session 统计" class="buttonLeft" onclick="button_jump_click('multinavi_session_query')" ></p>
+                    <p><input type="button" value="特殊路线pv统计" class="buttonLeft" onclick="button_jump_click('special_route_type_pv')" ></p>
+                    <p><input type="button" value="城市query统计" class="buttonLeft" onclick="button_jump_click('city_query')" ></p>
+                    <p><input type="button" value="多路线召回信息统计" class="buttonLeft" onclick="button_jump_click('multi_route_recall')" ></p>
+                    <p><input type="button" value="导航偏好信息统计" class="buttonLeft" onclick="button_jump_click('navigation_preference')" ></p>
+                    <p><input type="button" value="时间评估统计" class="buttonLeft" onclick="button_jump_click('route_time_ratio')" ></p>
+                </center>
+            </div>
+        </div>
+        <div class="right" id="div_right">
+            <div class="divtool">
+                <div class="divtoolname">
+                    <a style="font-size:20px">用户吐槽类型统计</a>
+                    
+                </div>
+                <div class="divtooltools">
+                    <div style="margin-left:2px;float:left;width:250px;height:98%;background:#bcdeff;box-shadow: 0 0 1px #000;">
+                        <center>
+                            <div style="width:100%;height:22px;background:#abcdef;">
+                                <a style="font-size:20px;" >时间选择 </a>
+                            </div>
+                            <div style="width:100%;height:5px;"></div>
+                            From: <input type="text" id="datepicker_from" name="datepicker_from" style="width:80px">
+                            To: <input type="text" id="datepicker_to" name="datepicker_to" style="width:80px">
+                        </center>
+                    </div>
+                    <div style="margin-left:3px;float:left;width:120px;height:98%;background:#bcdeff;box-shadow: 0 0 1px #000;">
+                        <center>
+                            <div style="width:100%;height:22px;background:#abcdef;">
+                                <a style="font-size:20px;" >查询操作 </a>
+                            </div>
+                            <div style="width:100%;height:5px;"></div>
+                            <input type="button" value="查询"  name="Button_Search" id="Button_Search" onclick="search_button_on_click()" style="width:100px;height:25px;box-shadow: 0 0 1px #0f0f0f;">
+                        </center>
+                    </div>
+                    <div style="margin-left:3px;float:left;width:360px;height:98%;background:#bcdeff;box-shadow: 0 0 1px #000;">
+                        <center>
+                            <div style="width:100%;height:22px;background:#abcdef;">
+                                <a style="font-size:20px;" >展示选项 </a>
+                            </div>
+                            <div style="width:100%;height:5px;"></div>
+                            <input type="button" id="button_hour" name="button_hour" value="按小时展示" style="width:100px;height:25px;box-shadow: 0 0 1px #0f0f0f;" onclick="button_hour_click()" >
+                            <input type="button" id="button_day" name="button_day" value="按天数展示" style="width:100px;height:25px;box-shadow: 0 0 1px #0f0f0f;" onclick="button_day_click()" >
+                            <input type="button" id="button_week" name="button_week" value="按周展示" style="width:100px;height:25px;box-shadow: 0 0 1px #0f0f0f;" onclick="button_week_click()" >
+                        </center>
+                    </div>
+                </div>
+            </div>
+            <div class="divcomment">
+                <center>
+                    <div style="height:500px;width:100%;">
+                        <div id="div_num_and_percent_area" style="height:100%;width:100%;"></div>
+                    </div>
+                    <div style="width:100%;height:5px;"></div>
+                    <div style="height:500px;width:100%;">
+                        <div id="div_bad_num_and_percent_area" style="height:100%;width:100%;"></div>
+                    </div>
+                    <div style="height:500px;width:100%;">
+                        <div id="div_num_and_percent_pie" style="float:left;height:100%;width:38%;"></div>
+                        <div id="div_bad_num_and_percent_pie" style="float:right;height:100%;width:62%;"></div>
+                    </div>
+                </center>
+            </div>
+        </div>
+    </form>
+</body>
+
+
+<script type="text/javascript">
+    JQ = jQuery.noConflict();
+    
+    var host_port    = $:global_info ;
+    var host        = "http://" + host_port[0] ;
+    var port_num    = host_port[1] ;
+    function button_jump_click( target_page ){
+        var url = host + ":" + port_num + "/" + target_page;
+        window.open( url , "_self");
+    }
+    
+    
+    JQ(function() {
+        JQ( "#datepicker_from" ).datepicker();
+    });
+    
+    JQ(function() {
+        JQ( "#datepicker_to" ).datepicker();
+    });
+    
+
+    var data_dict = {};
+    var show_model = "DAY";
+    var ename_to_cname = {};
+    ename_to_cname["detour"] = "绕路";
+    ename_to_cname["bad_traffic"] = "没有避开严重拥堵路段";
+    ename_to_cname["to_many_lights"] = "红绿灯过多";
+    ename_to_cname["noneed_highway"] = "没必要上高速";
+    ename_to_cname["to_many_badroad"] = "道路不好走";
+    ename_to_cname["route_complex"] = "路线复杂";
+    ename_to_cname["wrong_data"] = "数据错误";
+    ename_to_cname["normal"] = "一般";
+    ename_to_cname["good"] = "赞！";
+    ename_to_cname["bad"] = "其他(差，无原因)";
+    ename_to_cname["nothing"] = "退出";
+    ename_to_cname["broad_time_not_good"] = "播报时机不好";
+    ename_to_cname["broad_not_understand"] = "播报内容难理解";
+    ename_to_cname["broad_content_wrong"] = "播报内容错误";
+    ename_to_cname["too_frequent"] = "播报太频繁";
+    ename_to_cname["voice_bad"] = "播报声音太难听";
+    ename_to_cname["bad_all"] = "差";
+	
+	
+    function createAreaChart( div_id , title , ytitle , mydata , need_point ){
+        JQ('#' + div_id ).highcharts
+        (
+            {
+                chart: {
+                    type: 'area'
+                },
+                credits: {
+                    enabled: false
+                },
+                title: {
+                    text: title
+                },
+                xAxis: {
+                    type: 'datetime'
+                },
+                yAxis: {
+                    title: {
+                        text: ytitle
+                    }
+                },
+                tooltip: {
+                    crosshairs: true,
+                    shared: true,
+                    pointFormat: '<span style="color:{series.color};width:250px">{series.name}</span>: <b>{point.percentage:.2f}% ({point.y})</b><br>'
+                    
+                },
+                plotOptions: {
+                    area: {
+                        stacking: 'percent',
+                        lineColor: '#ffffff',
+                        lineWidth: 1,
+                        marker: {
+                            lineWidth: 1,
+                            lineColor: '#ffffff'
+                        }
+                    },
+                    series: {
+                        marker: {
+                            enabled: need_point
+                        }
+                    }
+                },
+                series: mydata
+            }
+        );
+        
+    }
+    
+    function createPieAddPercent( div_id , title , mydata , total_num){
+        JQ('#' + div_id ).highcharts(
+            {
+                title: { 
+                    text: title 
+                },
+                tooltip: {
+                    formatter: function() {
+                        return '<b>数目&比例</b><br>' +
+                            '数目:  ' + Highcharts.numberFormat(this.y, 0) + '<br>' +
+                            '比例:  ' + Highcharts.numberFormat( this.y * 100 / total_num , 2 ) + '%';
+                    }    
+                },
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer'
+                    }
+                },
+                series: mydata
+            }
+        );
+	}
+   
+    
+    function draw_tables(){
+        var start_time     = parseInt( data_dict["week_range"][0] ) * 3600 * 1000;
+        var name_list   = data_dict["name_list"];
+        var bad_name_list = data_dict["bad_name_list"];
+        var all_num_list = data_dict[ "all_num_list" ];
+        var all_bad_num_list = data_dict[ "all_bad_num_list" ];
+        var point_interval = 7 * 24 * 3600 * 1000;
+        var show_num_list = data_dict["week_num_list"];
+        var show_bad_num_list = data_dict["week_bad_num_list"];
+        var need_point = true;
+        
+        if( show_model == "HOUR" ){
+            start_time     = parseInt( data_dict["hour_range"][0] ) * 3600 * 1000;
+            point_interval = 3600 * 1000;
+            show_num_list = data_dict["hour_num_list"];
+            show_bad_num_list = data_dict["hour_bad_num_list"];
+            need_point = false;
+        }else if( show_model == "DAY" ){
+            start_time     = parseInt( data_dict["day_range"][0] ) * 3600 * 1000;
+            point_interval = 24 * 3600 * 1000;
+            show_num_list = data_dict["day_num_list"];
+            show_bad_num_list = data_dict["day_bad_num_list"];
+            need_point = true;
+        }
+        var mydata=[];
+        for( var i = 0 ; i < name_list.length ; i++ ){
+            mydata.push(
+                {
+                    name: ename_to_cname[ name_list[i] ],
+                    data: show_num_list[i],
+                    pointInterval:  point_interval,
+                    pointStart: start_time ,
+                }
+            );
+        }
+        
+        createAreaChart( "div_num_and_percent_area" , "用户反馈信息" , "所占比例"  , mydata , need_point );
+        
+        var in_date = [];
+        var total_num = 0;
+        for( var i = 0 ; i < name_list.length ; i ++ ){
+            total_num += parseInt( all_num_list[i] );
+            in_date.push( [ ename_to_cname[ name_list[i] ] , all_num_list[i] ] );
+        }
+        mydata=[
+            {
+                type: 'pie',
+                name: '次数',
+                data: in_date
+            }
+        ];
+        createPieAddPercent( "div_num_and_percent_pie" , "用户反馈信息分布" , mydata , total_num );
+        
+        mydata=[];
+        for( var i = 0 ; i < bad_name_list.length ; i++ ){
+            mydata.push(
+                {
+                    name: ename_to_cname[ bad_name_list[i] ],
+                    data: show_bad_num_list[i],
+                    pointInterval:  point_interval,
+                    pointStart: start_time ,
+                }
+            );
+        }
+        createAreaChart( "div_bad_num_and_percent_area" , "差评反馈信息统计" , "所占比例"  , mydata , need_point );
+        
+        in_date = [];
+        total_num = 0;
+        for( var i = 0 ; i < bad_name_list.length ; i ++ ){
+            total_num += parseInt( all_bad_num_list[i] );
+            in_date.push( [ ename_to_cname[ bad_name_list[i] ] , all_bad_num_list[i] ] );
+        }
+        mydata=[
+            {
+                type: 'pie',
+                name: '次数',
+                data: in_date
+            }
+        ];
+        createPieAddPercent( "div_bad_num_and_percent_pie" , "差评反馈信息分布" , mydata , total_num );
+    
+    }
+    
+    function button_hour_click(){
+        show_model = "HOUR";
+        draw_tables();
+    }
+    
+    
+    function button_day_click(){
+        show_model = "DAY";
+        draw_tables();
+    }
+    
+    function button_week_click(){
+        show_model = "WEEK";
+        draw_tables();
+    }
+    
+   
+    function init_data( ){
+        
+        
+    }
+    
+    var xmlHTTP = new XMLHttpRequest();
+    function query_info_done(){
+        if( xmlHTTP.readyState == 4 && xmlHTTP.status == 200){
+            json_obj = eval('(' + xmlHTTP.responseText + ')');
+            
+            document.getElementById("datepicker_from").value = json_obj['date_from'];
+            document.getElementById("datepicker_to").value   = json_obj['date_to'];
+            data_dict = json_obj;
+            data_len  = data_dict['data_len'];
+            if( data_len <= 0 ){
+                alert( "该查询日期内无数据");
+                exit(0) ;
+            }
+            
+            init_data( );
+            draw_tables();
+        }
+    }
+
+    
+
+    function search_button_on_click(  ){
+        var url = host + ":" + port_num + "/naviure_type_flag_get_data";
+        var info = "";
+        info = info + "date_from=" + document.getElementById("datepicker_from").value ;
+        info = info + "&date_to=" + document.getElementById("datepicker_to").value ;
+        xmlHTTP.open("POST", url, true);
+        xmlHTTP.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+        xmlHTTP.onreadystatechange = query_info_done;
+        xmlHTTP.send( info );
+    }
+    
+   
+   
+    search_button_on_click();
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</html>
